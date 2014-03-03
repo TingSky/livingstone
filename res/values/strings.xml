@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">活石</string>
+    <string name="dummy_button">登录</string>
+    <string name="dummy_content">欢迎图片\n从服务器下载</string>
+    
+    
+    
+     <string-array name="menu">
+        <item>首页</item>
+        <item>经文</item>
+        <item>讨论</item>
+        <item>个人中心</item>
+    </string-array>
+    <string name="drawer_open">菜单</string>
+    <string name="drawer_close">活石</string>
+     
+    <string name="action_serach">搜索</string>
+    <string name="action_user">我</string>
+    <string name="action_more">更多</string>
+    
+    <string name="hello_world">Hello world!</string>
+
+</resources>
