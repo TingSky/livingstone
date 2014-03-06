@@ -1,17 +1,34 @@
 package com.joker.livingstone;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.joker.livingstone.util.DBHelper;
 
 
-public class IndexActivity extends ActionBarActivity {
+public class IndexActivity extends ActionBarActivity{
 	
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -20,13 +37,29 @@ public class IndexActivity extends ActionBarActivity {
     private ListView drawerList;
     private CharSequence title;
     
+    private ActionBar bar;
     
+    private ArrayList<HashMap<String,String>> bibleData;
+    private GridView mGridView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_index);
+		mGridView = (GridView) findViewById(R.id.gridView);
 		
+		
+		initDrawerAndActionBar();
+		loadBibleData();
+        
+        
+
+	}
+	
+	/**
+	 * ≥ı ºªØDrawer∫ÕActionBar
+	 */
+	private void initDrawerAndActionBar() {
 		menuList = getResources().getStringArray(R.array.menu);
 		title = getTitle();
 		
@@ -34,8 +67,8 @@ public class IndexActivity extends ActionBarActivity {
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
 		
-        
-        drawerToggle = new ActionBarDrawerToggle(
+		bar = getSupportActionBar();
+		drawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 drawerLayout,         /* DrawerLayout object */
                 R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
@@ -43,22 +76,91 @@ public class IndexActivity extends ActionBarActivity {
                 R.string.drawer_close  /* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-            	getSupportActionBar().setTitle(R.string.app_name);
+            	bar.setTitle(R.string.app_name);
             	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-            	getSupportActionBar().setTitle(R.string.drawer_open);
+            	bar.setTitle(R.string.drawer_open);
                 supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        bar.setDisplayHomeAsUpEnabled(true);
+        bar.setHomeButtonEnabled(true);
 
 	}
+	
+	
+	private void loadBibleData(){
+		String sql = "SELECT seqId as _id , bookName , chapterCount , isNew from book order by bookNo";
+		Cursor c = DBHelper.get().rawQuery(sql, null);
+		
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+//		CursorAdapter adapter = new CursorAdapter(
+				IndexActivity.this,
+				R.layout.directory,
+				c,
+				new String[] {"bookName" , "chapterCount"},
+				new int[] {R.id.bookName , R.id.chapter},
+				CursorAdapter.NO_SELECTION
+		);
+		mGridView.setAdapter(adapter);
+		mGridView.setOnItemClickListener(new ItemClickListener());
+		
+	}
+	
+	class CursorAdapter extends SimpleCursorAdapter{
+		
+		private LayoutInflater inflater;
 
+		public CursorAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
+			inflater = (LayoutInflater)context.getSystemService("layout_inflater");
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (!this.mDataValid) {
+	            throw new IllegalStateException("this should only be called when the cursor is valid");
+	        }
+	        if (!this.mCursor.moveToPosition(position)) {
+	            throw new IllegalStateException("couldn't move cursor to position " + position);
+	        }
+	        View v;
+	        
+	        if(position < 39){
+	        	v = inflater.inflate(R.layout.directory, parent, false);
+	        }else{
+	        	v = inflater.inflate(R.layout.directory1, parent, false);
+	        }
+	        bindView(v, this.mContext, this.mCursor);
+	        return v;
+			
+		}
+
+	}
+	
+
+
+	class ItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			TextView t = (TextView)view.findViewById(R.id.bookName);
+			Toast.makeText(IndexActivity.this, t.getText(), Toast.LENGTH_LONG).show();
+			
+		}
+
+	}
+	
+	
+	
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -97,5 +199,6 @@ public class IndexActivity extends ActionBarActivity {
 	 
 	    return super.onOptionsItemSelected(item);
 	}
+	
 
 }

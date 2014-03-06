@@ -20,6 +20,6 @@
     <string name="action_user">我</string>
     <string name="action_more">更多</string>
     
-    <string name="hello_world">Hello world!</string>
+    <string name="test">Test!测试</string>
 
 </resources>
