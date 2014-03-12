@@ -20,6 +20,8 @@
     <string name="action_user">我</string>
     <string name="action_more">更多</string>
     
-    <string name="test">Test!测试</string>
+    <string name="search_hint">请输入经文关键词</string>
+    
+    <string name="test">Test!测试Test!测试Test!测试Test!测试Test!测试Test!测试</string>
 
 </resources>

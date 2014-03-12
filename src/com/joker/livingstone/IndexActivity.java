@@ -1,17 +1,17 @@
 package com.joker.livingstone;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +22,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
@@ -39,19 +38,18 @@ public class IndexActivity extends ActionBarActivity{
     
     private ActionBar bar;
     
-    private ArrayList<HashMap<String,String>> bibleData;
     private GridView mGridView;
+    private SearchView search;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_index);
 		mGridView = (GridView) findViewById(R.id.gridView);
-		
+//		mGridView.setTextFilterEnabled(true);
 		
 		initDrawerAndActionBar();
 		loadBibleData();
-        
         
 
 	}
@@ -108,7 +106,6 @@ public class IndexActivity extends ActionBarActivity{
 		);
 		mGridView.setAdapter(adapter);
 		mGridView.setOnItemClickListener(new ItemClickListener());
-		
 	}
 	
 	class CursorAdapter extends SimpleCursorAdapter{
@@ -150,9 +147,16 @@ public class IndexActivity extends ActionBarActivity{
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			TextView t = (TextView)view.findViewById(R.id.bookName);
-			Toast.makeText(IndexActivity.this, t.getText(), Toast.LENGTH_LONG).show();
+//			TextView t = (TextView)view.findViewById(R.id.bookName);
+//			Toast.makeText(IndexActivity.this, position + "", Toast.LENGTH_LONG).show();
 			
+			Cursor c = (Cursor)parent.getItemAtPosition(position);
+			Intent i = new Intent(IndexActivity.this , ChapterActivity.class);
+			i.putExtra("bookId", c.getInt(0));
+//			i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
+			i.putExtra("bookName", c.getString(1));
+//			i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
+			IndexActivity.this.startActivity(i);
 		}
 
 	}
@@ -166,16 +170,61 @@ public class IndexActivity extends ActionBarActivity{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.index, menu);
 		
-//		SearchManager searchManager =
-//		        (SearchManager) IndexActivity.this.getSystemService(Context.SEARCH_SERVICE);
-//		SupportMenuItem searchMenuItem = ((SupportMenuItem) menu.findItem(R.id.action_serach));
-//		SearchView searchView = (SearchView) searchMenuItem.getActionView();
-//		searchView.setSearchableInfo(searchManager.getSearchableInfo(IndexActivity.this.getComponentName()));
+		SearchManager SManager =  (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        search = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        search.setSearchableInfo(SManager.getSearchableInfo(getComponentName()));
+        
+        search.setQueryHint(getResources().getString(R.string.search_hint));
+//        search.setOnSearchClickListener(new menuClickListener());
+        search.setOnQueryTextListener(new searchListener());
+        
+//        search.setIconifiedByDefault(true);
 		
 		
 		
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
+	
+	class searchListener implements SearchView.OnQueryTextListener{
+
+
+		@Override
+		public boolean onQueryTextSubmit(String text) {
+//			Toast.makeText(IndexActivity.this, text, Toast.LENGTH_LONG).show();
+			
+	        Intent i = new Intent(IndexActivity.this , SearchActivity.class);
+	        i.putExtra(SearchManager.QUERY, text);
+//	        search.setQuery(null, false);
+	        search.setIconified(true);
+	        startActivity(i);
+	        
+	        
+	        
+//	        i.putExtra(SearchManager.APP_DATA, value)
+//			IndexActivity.this.onSearchRequested();
+			return true;
+		}
+
+		@Override
+		public boolean onQueryTextChange(String paramString) {
+//			if(TextUtils.isEmpty(paramString)){
+//				mGridView.clearTextFilter();
+//	        }else{
+//	        	mGridView.setFilterText(paramString);
+//	        }
+//			mGridView.setFilterText(paramString);
+			return true;
+		}
+		
+	}
+	
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        setIntent(intent);
+////        intent.
+//    }
 	
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -199,6 +248,22 @@ public class IndexActivity extends ActionBarActivity{
 	 
 	    return super.onOptionsItemSelected(item);
 	}
+
+
+	//µ±µã»÷ËÑË÷Ê±
+//	@Override
+//	public boolean onSearchRequested() {
+//		String text = search.getQuery().toString();
+//		Bundle bundle=new Bundle();  
+//        bundle.putString("data", text);
+//        startSearch("ºÇºÇ", false, bundle, false);
+//        Intent i = new Intent(this, SearchActivity.class);
+//        
+//        
+//        
+//		Toast.makeText(IndexActivity.this, text, Toast.LENGTH_LONG).show();
+//		return true;
+//	}
 	
 
 }
