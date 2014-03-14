@@ -17,12 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
 
@@ -39,6 +39,8 @@ public class IndexActivity extends ActionBarActivity{
     private ActionBar bar;
     
     private GridView mGridView;
+    
+    private MenuItem searchMenuItem;
     private SearchView search;
 
 	@Override
@@ -171,7 +173,7 @@ public class IndexActivity extends ActionBarActivity{
 		getMenuInflater().inflate(R.menu.index, menu);
 		
 		SearchManager SManager =  (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        searchMenuItem = menu.findItem(R.id.action_search);
         search = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         search.setSearchableInfo(SManager.getSearchableInfo(getComponentName()));
         
@@ -195,10 +197,13 @@ public class IndexActivity extends ActionBarActivity{
 			
 	        Intent i = new Intent(IndexActivity.this , SearchActivity.class);
 	        i.putExtra(SearchManager.QUERY, text);
-//	        search.setQuery(null, false);
-	        search.setIconified(true);
-	        startActivity(i);
 	        
+	        
+	        MenuItemCompat.collapseActionView(searchMenuItem);
+	        search.setQuery(null, false);
+	        search.clearFocus();
+	        
+	        startActivity(i);
 	        
 	        
 //	        i.putExtra(SearchManager.APP_DATA, value)
@@ -218,13 +223,6 @@ public class IndexActivity extends ActionBarActivity{
 		}
 		
 	}
-	
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//        setIntent(intent);
-////        intent.
-//    }
 	
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
