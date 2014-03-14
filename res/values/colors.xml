@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="spb_default_color">#ff33b5e5</color>
+    <color name="default_progress_bar_color">#ff33b5e5</color>
+    <color name="TextColorBlack">#ff000000</color>
+    <color name="TextColorWhite">#ffffffff</color>
+    <color name="TextColorGray">#ff505050</color>
+    <color name="ToastBgColor">#ff424242</color>
+    <color name="btnColor">#ffffffff</color>
+    <color name="textColorforItemTitle">#ff666666</color>
+    <color name="secondbtntextColor">#ff496ea3</color>
+    <color name="textColorforCheckBox">#ff333333</color>
+    <color name="bgColor">#fff2f2f2</color>
+    <color name="downLoadTextNomal">#ff3366cc</color>
+    <color name="downLoadTextPressed">#ffffffff</color>
+    <color name="downLoadBackNomal">#ffffffff</color>
+    <color name="downLoadBackFocus">#ff6698e7</color>
+    <color name="downLoadBackPressed">#ff3366cc</color>
+    <color name="dialog_tiltle_blue">#ff2277bb</color>
+    <color name="light_green">#ffa7d867</color>
+    <color name="dark_grey">#ff4a4a4a</color>
+    <color name="dark_grey_hl">#ff444444</color>
+    <color name="font_white">#ff929292</color>
+    <color name="font_white_hl">#fff8f8f8</color>
+    <color name="bg_white">#fff8f8f8</color>
+    <color name="button_bg_white">#fffdfdfd</color>
+    <color name="font_light_grey">#ffd8d8d8</color>
+    <color name="link_color">#ff99b1ce</color>
+    <color name="bar_white">#fff2f2f2</color>
+    <color name="app_bg_grey">#fff8f8f8</color>
+    <color name="selected_grey">#fff3f3f3</color>
+    <color name="tab_bg_hl">#ff929292</color>
+    <color name="tab_textcolor_hl">#ffffffff</color>
+    <color name="tab_bg">#fff8f8f8</color>
+    <color name="tab_textcolor">#ff777777</color>
+    <color name="link_overlay">#99777777</color>
+    <color name="timeline_book_title">#ff4972a3</color>
+    <color name="user_more">#ffb8b8b8</color>
+    
+    <color name="action_bar_bg">#ff4a4a4a</color>
+    <color name="action_bar_title">#fffafafa</color>
+    <color name="item_press">#DDDDDDDD</color>
+</resources>
