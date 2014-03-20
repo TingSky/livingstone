@@ -21,4 +21,6 @@ public class DBHelper {
 		// SQLiteDatabase.OPEN_READONLY
 		//					| SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 	}
+	
+
 }

@@ -1,8 +1,7 @@
 package com.joker.livingstone;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,10 +22,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DialogHelper;
 
 
 public class ChapterActivity extends ActionBarActivity{
@@ -42,6 +40,7 @@ public class ChapterActivity extends ActionBarActivity{
     private GridView mGridView;
     private int bookId;
     private String bookName;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -170,13 +169,11 @@ public class ChapterActivity extends ActionBarActivity{
 			Log.d("123", c.getString(1) + bookName + bookId);
 //			i.putExtra("chapterNo", c.getString(c.getColumnIndex("chapterNo")));
 			ChapterActivity.this.startActivity(i);
+//			dialog = ProgressDialog.show(ChapterActivity.this , "活石" ,"正在加载...");
+			DialogHelper.showDialog(ChapterActivity.this);
 		}
 
 	}
-	
-	
-	
-	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

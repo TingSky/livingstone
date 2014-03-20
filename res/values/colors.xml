@@ -40,4 +40,5 @@
     <color name="action_bar_bg">#ff4a4a4a</color>
     <color name="action_bar_title">#fffafafa</color>
     <color name="item_press">#DDDDDDDD</color>
+    <color name="hint">#FF0A0A0A</color>
 </resources>

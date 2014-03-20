@@ -1,8 +1,6 @@
 package com.joker.livingstone;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
@@ -31,11 +29,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DialogHelper;
 
 public class SectionActivity extends ActionBarActivity {
 
@@ -47,9 +48,6 @@ public class SectionActivity extends ActionBarActivity {
 
 	private ActionBar bar;
 
-	private ListView mListView1;
-	private ListView mListView2;
-	private ListView mListView3;
 	private ViewPager mPager;
 	private ArrayList<View> pageView;
 	
@@ -58,28 +56,25 @@ public class SectionActivity extends ActionBarActivity {
 	private int chapterNo;
 	
 	private int sectionNo;
-	private int chapterId;
 	private String query;
+	
+	private MyPagerAdapter adapter;
+	private TextView hint;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		DialogHelper.dismiss();
+		
 		setContentView(R.layout.activity_section);
+		hint = (TextView)findViewById(R.id.hint);
 		mPager = (ViewPager)findViewById(R.id.viewPager);
 		
-		mListView1 = (ListView)
-                (getLayoutInflater().inflate(R.layout.pager_listview,null).findViewById(R.id.listview));
-		mListView2 = (ListView)
-				(getLayoutInflater().inflate(R.layout.pager_listview,null).findViewById(R.id.listview));
-		mListView3 = (ListView)
-				(getLayoutInflater().inflate(R.layout.pager_listview,null).findViewById(R.id.listview));
-		mListView1.setDivider(null);
-		mListView2.setDivider(null);
-		mListView3.setDivider(null);
 		
 		getDataFromIntent();
-		initDrawerAndActionBar(bookName + " · " + chapterNo);
+		initDrawerAndActionBar();
 		loadSectionData();
+		
 
 	}
 
@@ -93,12 +88,16 @@ public class SectionActivity extends ActionBarActivity {
 		query = i.getStringExtra("query");
 	}
 
+	private String initTitle(){
+		return bookName + " · " + chapterNo;
+		
+	}
 	/**
 	 * 初始化Drawer和ActionBar
 	 */
-	private void initDrawerAndActionBar(final String title) {
+	private void initDrawerAndActionBar() {
 		menuList = getResources().getStringArray(R.array.menu);
-		setTitle(title);
+		setTitle(initTitle());
 
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
@@ -113,13 +112,13 @@ public class SectionActivity extends ActionBarActivity {
 		R.string.drawer_close /* "close drawer" description for accessibility */
 		) {
 			public void onDrawerClosed(View view) {
-				bar.setTitle(title);
+				setTitle(initTitle());
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				bar.setTitle(R.string.drawer_open);
+				setTitle(R.string.drawer_open);
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
@@ -132,13 +131,31 @@ public class SectionActivity extends ActionBarActivity {
 	}
 
 	private void loadSectionData() {
-		String sql2 = "SELECT seqId as _id , sectionNo , sectionText , title , chapterId from section "
+		String sql = "SELECT seqId as _id , chapterNo from chapter "
+				+ "where bookId = ? "
+				+ "order by chapterIndex ";
+		Cursor c = DBHelper.get().rawQuery(sql, new String[]{bookId + ""});
+		pageView = new ArrayList<View>();
+		while(c.moveToNext()){
+			ListView listView = (ListView)
+					(getLayoutInflater().inflate(R.layout.pager_listview,null).findViewById(R.id.listview));
+			pageView.add(listView);
+		}
+		
+		
+
+		mPager.setOnPageChangeListener(new MyPagerChangeListener());
+		adapter = new MyPagerAdapter(pageView);
+		mPager.setAdapter(adapter);
+		mPager.setCurrentItem(chapterNo - 1);
+	}
+	
+	private ListView loadPage(int chapterNo , ListView target){
+		
+		String sql2 = "SELECT seqId as _id , sectionNo , sectionText , title  from section "
 				+ "where bookId = ? and chapterNo = ? "
 				+ "order by sectionIndex ";
-		Log.d("123", sql2);
 		Cursor c2 = DBHelper.get().rawQuery(sql2, new String[]{bookId+"" , chapterNo + ""});
-		c2.moveToNext();
-		chapterId = c2.getInt(4);
 		
 		// SimpleCursorAdapter adapter = new SimpleCursorAdapter(
 		MyAdapter adapter2 = new MyAdapter(
@@ -148,89 +165,19 @@ public class SectionActivity extends ActionBarActivity {
 				new String[] { "sectionNo",	"sectionText" },
 				new int[] { R.id.sectionNo, R.id.sectionText },
 				MyAdapter.NO_SELECTION);
-		mListView2.setAdapter(adapter2);
-		mListView2.setOnItemClickListener(new ItemClickListener());		
-		scroll(adapter2 , this.sectionNo);
-		pageView = new ArrayList<View>();
-//		pageView.add(mListView2);
 		
-		loadPrePage(chapterId);
-		loadNextPage(chapterId);
-		//前一个
-//		int chapterId = c.getInt(c.getColumnIndex("chapterId"));
-//		String sql1 = "SELECT seqId as _id , sectionNo , sectionText , title , chapterId from section "
-//				+ "where chapterId = ? "
-//				+ "order by sectionIndex ";
-//		Log.d("123", sql1);
-//		Cursor c1 = DBHelper.get().rawQuery(sql1, new String[]{chapterId - 1 + ""});
-//		MyAdapter adapter1 = new MyAdapter(
-//				SectionActivity.this, 
-//				new int[] {R.layout.section, R.layout.section_title1,R.layout.section_title2 }, 
-//				c1, 
-//				new String[] { "sectionNo",	"sectionText" },
-//				new int[] { R.id.sectionNo, R.id.sectionText },
-//				MyAdapter.NO_SELECTION);
-//		mListView1.setAdapter(adapter1);
-////		pageView.add(mListView1);
-//		
-//		
-//		//后一个
-////		int chapterId = c.getInt(c.getColumnIndex("chapterId"));
-//		String sql3 = "SELECT seqId as _id , sectionNo , sectionText , title , chapterId from section "
-//				+ "where chapterId = ? "
-//				+ "order by sectionIndex ";
-//		Log.d("123", sql3);
-//		Cursor c3 = DBHelper.get().rawQuery(sql1, new String[]{chapterId + 1 + ""});
-//		MyAdapter adapter3 = new MyAdapter(
-//				SectionActivity.this, 
-//				new int[] {R.layout.section, R.layout.section_title1,R.layout.section_title2 }, 
-//				c3, 
-//				new String[] { "sectionNo",	"sectionText" },
-//				new int[] { R.id.sectionNo, R.id.sectionText },
-//				MyAdapter.NO_SELECTION);
-//		mListView3.setAdapter(adapter3);
-		
-		
-		pageView.add(mListView1);
-		pageView.add(mListView2);
-		pageView.add(mListView3);
-		
-
-		mPager.setOnPageChangeListener(new MyPagerChangeListener());
-		mPager.setAdapter(new MyPagerAdapter(pageView));
-		mPager.setCurrentItem(1);
-	}
-	private void loadPrePage(int chapterId) {
-		String sql = "SELECT seqId as _id , sectionNo , sectionText , title , chapterId from section "
-				+ "where chapterId = ? "
-				+ "order by sectionIndex ";
-		Log.d("123", sql);
-		Cursor c = DBHelper.get().rawQuery(sql, new String[]{chapterId - 1 + ""});
-		MyAdapter adapter1 = new MyAdapter(
-				SectionActivity.this, 
-				new int[] {R.layout.section, R.layout.section_title1,R.layout.section_title2 }, 
-				c, 
-				new String[] { "sectionNo",	"sectionText" },
-				new int[] { R.id.sectionNo, R.id.sectionText },
-				MyAdapter.NO_SELECTION);
-		mListView1.setAdapter(adapter1);
+		target.setAdapter(adapter2);
+		target.setDivider(null);
+		target.setOnItemClickListener(new ItemClickListener());	
+		if(chapterNo == this.chapterNo){
+			scroll(target , adapter2 , this.sectionNo);
+		}
+		return target;
 	}
 	
-	private void loadNextPage(int chapterId) {
-		String sql = "SELECT seqId as _id , sectionNo , sectionText , title , chapterId from section "
-				+ "where chapterId = ? "
-				+ "order by sectionIndex ";
-		Log.d("123", sql);
-		Cursor c3 = DBHelper.get().rawQuery(sql, new String[]{chapterId + 1 + ""});
-		MyAdapter adapter3 = new MyAdapter(
-				SectionActivity.this, 
-				new int[] {R.layout.section, R.layout.section_title1,R.layout.section_title2 }, 
-				c3, 
-				new String[] { "sectionNo",	"sectionText" },
-				new int[] { R.id.sectionNo, R.id.sectionText },
-				MyAdapter.NO_SELECTION);
-		mListView3.setAdapter(adapter3);
-	}
+
+	
+
 
 	class MyPagerChangeListener implements OnPageChangeListener {
 
@@ -246,27 +193,22 @@ public class SectionActivity extends ActionBarActivity {
 
 		@Override
 		public void onPageSelected(int arg0) {
-			Toast.makeText(SectionActivity.this, arg0 +"", Toast.LENGTH_LONG).show();
-			if(arg0 == 0){
-				loadPrePage(chapterId - 2);
-			}
-			if(arg0 == 2){
-				loadNextPage(chapterId + 2);
-			}
+			SectionActivity.this.chapterNo = arg0 + 1;
+			SectionActivity.this.setTitle(initTitle());
 		}
 
 	}
 	public class MyPagerAdapter extends PagerAdapter {
-		public List<View> mListViews;
+		public List<View> mListViews = new ArrayList<View>();
 
 		public MyPagerAdapter(List<View> mListViews) {
 			this.mListViews = mListViews;
 		}
 
 		@Override
-		public void destroyItem(View arg0, int arg1, Object arg2) {
-			Log.d("destroyItem", "" + arg0 + " " + arg1);
-			((ViewPager) arg0).removeView(mListViews.get(arg1));
+		public void destroyItem(View container, int position, Object arg2) {
+			Log.d("destroyItem", "" + container + " " + position);
+			((ViewPager) container).removeView(mListViews.get(position));
 		}
 
 		@Override
@@ -275,11 +217,13 @@ public class SectionActivity extends ActionBarActivity {
 		}
 
 		@Override
-		public Object instantiateItem(View arg0, int arg1) {
-			Log.d("instantiateItem", "" + arg0 + " " + arg1);
+		public Object instantiateItem(View container, int position) {
+//			Log.d("instantiateItem", "" + container + " " + position);
 			try {
-				if (mListViews.get(arg1).getParent() == null)
-					((ViewPager) arg0).addView(mListViews.get(arg1), 0);
+				View v =  mListViews.get(position);
+				if (v != null && ((ListView)v).getAdapter() != null ){
+					((ViewPager) container).addView(mListViews.get(position), 0);
+				}
 				else {
 					// 很难理解新添加进来的view会自动绑定一个父类，由于一个儿子view不能与两个父类相关，所以得解绑
 					// 不这样做否则会产生 viewpager java.lang.IllegalStateException: The
@@ -287,25 +231,54 @@ public class SectionActivity extends ActionBarActivity {
 					// removeView() on the child's parent first.
 					// 还有一种方法是viewPager.setOffscreenPageLimit(3); 这种方法不用判断parent
 					// 是不是已经存在，但多余的listview不能被destroy
-					((ViewGroup) mListViews.get(arg1).getParent())
-							.removeView(mListViews.get(arg1));
-					((ViewPager) arg0).addView(mListViews.get(arg1), 0);
+
+//					((ViewGroup) mListViews.get(position -1).getParent())
+//							.removeView(mListViews.get(position -1));
+//					((ViewPager) container)
+//							.addView(mListViews.get(position -1), position - 1);
+//					if(mListViews.get(position -1) == null)
+					Log.e("tag",position+"");
+//					if(position == 0){
+//						initListView(container, position);
+//						initListView(container, position + 1);
+//					}else if(position == mListViews.size()){
+//						initListView(container, position - 1);
+//						initListView(container, position);
+//					}else{
+//						initListView(container, position - 1);
+					
+					((ViewGroup) v.getParent()).removeView(v);
+					v = loadPage(position + 1, (ListView)v);
+					mListViews.set(position, v);
+					((ViewPager) container).addView(mListViews.get(position), 0);
+					
+//					((ViewGroup) mListViews.get(position).getParent())
+//							.removeView(mListViews.get(position));
+//					((ViewPager) container)
+//							.addView(mListViews.get(position), position);
+//					
+//					((ViewGroup) mListViews.get(position).getParent())
+//							.removeView(mListViews.get(position));
+//					((ViewPager) container)
+//							.addView(mListViews.get(position), position +1);
+
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				Log.d("parent=", "" + mListViews.get(arg1).getParent());
+				Log.d("parent=", "" + mListViews.get(position).getParent());
 				e.printStackTrace();
 			}
-			return mListViews.get(arg1);
+			return mListViews.get(position);
+		}
+		
+
+		@Override
+		public boolean isViewFromObject(View container, Object position) {
+			return container == (position);
 		}
 
 		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == (arg1);
-		}
-
-		@Override
-		public void restoreState(Parcelable arg0, ClassLoader arg1) {
+		public void restoreState(Parcelable container, ClassLoader loader) {
 		}
 
 		@Override
@@ -314,17 +287,17 @@ public class SectionActivity extends ActionBarActivity {
 		}
 
 		@Override
-		public void startUpdate(View arg0) {
+		public void startUpdate(View container) {
 		}
 	}
 	
 	//搜索时滑到相应位置
-	private void scroll(MyAdapter adapter , int sectionNo) {
+	private void scroll(ListView target ,MyAdapter adapter , int sectionNo) {
 		if(sectionNo != 0){
 			for(int i = 1; i< adapter.getCount() ; i++){
 				Cursor cur = (Cursor)adapter.getItem(i);
-				if(cur.getInt(1) == sectionNo){
-					mListView2.setSelection(i);
+				if(cur.getInt(1) == sectionNo ){
+					target.setSelection(i);
 					break;
 				}
 			}
@@ -448,15 +421,31 @@ public class SectionActivity extends ActionBarActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			TextView t = (TextView) view.findViewById(R.id.bookName);
-			Toast.makeText(SectionActivity.this, position + "",
-					Toast.LENGTH_LONG).show();
+//			TextView t = (TextView) view.findViewById(R.id.bookName);
+//			Toast.makeText(SectionActivity.this, position + "",
+//					Toast.LENGTH_LONG).show();
 
-			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			// Intent i = new Intent(IndexActivity.this , );
-			Log.d("123", c.getString(0));
+			if(hint.getVisibility() == View.VISIBLE){
+				hint.setVisibility(View.INVISIBLE);
+			}else{
+				Cursor c = (Cursor) parent.getItemAtPosition(position);
+				hint.setText(c.getString(2));
+				
+//			hint.setText(c.getString(c.getColumnIndex("sectionText ")));
+				hint.setVisibility(View.VISIBLE);
+				
+			}
+			
 		}
 
+	}
+	@Override
+	public void onBackPressed() {
+		if(hint.getVisibility() == View.VISIBLE){
+			hint.setVisibility(View.INVISIBLE);
+		}else{
+			super.onBackPressed();
+		}
 	}
 
 	@Override

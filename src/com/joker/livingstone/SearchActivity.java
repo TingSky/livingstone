@@ -1,5 +1,6 @@
 package com.joker.livingstone;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DialogHelper;
 import com.joker.livingstone.util.SearchProvider;
 
 
@@ -299,14 +301,11 @@ public class SearchActivity extends ActionBarActivity{
 			i.putExtra("query" , query);
 			
 			SearchActivity.this.startActivity(i);
+//			dialog = ProgressDialog.show(SearchActivity.this , "活石" ,"正在加载...");
+			DialogHelper.showDialog(SearchActivity.this);
 		}
 
 	}
-	
-	
-	
-	
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

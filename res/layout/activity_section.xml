@@ -5,18 +5,38 @@
 
     <!-- The main content view -->
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="horizontal" 
+        android:orientation="vertical" 
+        android:layout_weight="1"
         android:background="@drawable/border_section">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
+            android:layout_gravity="center"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
         </android.support.v4.view.ViewPager>
-    </LinearLayout>
+        
+		<TextView
+		    android:id="@+id/hint"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:lineSpacingExtra="5dp"
+		    android:text="@string/test"
+		    android:textColor="@color/hint"
+		    android:textSize="16sp"
+		    android:paddingTop="12dp"
+		    android:paddingBottom="12dp"
+		    android:paddingLeft="20dp"
+		    android:paddingRight="20dp"
+		    android:background="@drawable/hint"
+		    android:visibility="invisible"
+		    android:layout_gravity="bottom" >
+		</TextView>
+
+    </FrameLayout>
 
     <!-- The navigation drawer -->
 
