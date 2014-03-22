@@ -1,5 +1,7 @@
 package com.joker.livingstone;
 
+import java.util.HashMap;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +12,13 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -25,9 +26,10 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import com.joker.livingstone.util.DBHelper;
+import com.umeng.analytics.MobclickAgent;
 
 
-public class IndexActivity extends ActionBarActivity{
+public class IndexActivity extends BaseActivity{
 	
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -205,6 +207,9 @@ public class IndexActivity extends ActionBarActivity{
 	        
 	        startActivity(i);
 	        
+	        HashMap<String,String> map = new HashMap<String, String>();
+	        map.put("搜索内容", text);
+	        MobclickAgent.onEvent(IndexActivity.this, "首页搜索提交", map);
 	        
 //	        i.putExtra(SearchManager.APP_DATA, value)
 //			IndexActivity.this.onSearchRequested();

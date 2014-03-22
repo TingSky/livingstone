@@ -1,7 +1,5 @@
 package com.joker.livingstone;
 
-import android.app.AlertDialog.Builder;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,7 +8,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +24,7 @@ import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DialogHelper;
 
 
-public class ChapterActivity extends ActionBarActivity{
+public class ChapterActivity extends BaseActivity{
 	
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;

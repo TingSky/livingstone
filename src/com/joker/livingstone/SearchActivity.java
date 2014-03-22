@@ -1,5 +1,7 @@
 package com.joker.livingstone;
 
+import java.util.HashMap;
+
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,6 +19,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.format.Time;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -34,9 +37,10 @@ import android.widget.TextView;
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DialogHelper;
 import com.joker.livingstone.util.SearchProvider;
+import com.umeng.analytics.MobclickAgent;
 
 
-public class SearchActivity extends ActionBarActivity{
+public class SearchActivity extends BaseActivity{
 	
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -340,6 +344,11 @@ public class SearchActivity extends ActionBarActivity{
 	        search.clearFocus();
 	        
 	        startActivity(i);
+	        
+	        HashMap<String,String> map = new HashMap<String, String>();
+	        map.put("ËÑË÷ÄÚÈÝ", text);
+	        MobclickAgent.onEvent(SearchActivity.this, "ËÑË÷Ò³ËÑË÷Ìá½»", map);
+	        
 			return true;
 		}
 

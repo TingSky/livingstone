@@ -1,6 +1,7 @@
 package com.joker.livingstone;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,8 +39,9 @@ import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DialogHelper;
+import com.umeng.analytics.MobclickAgent;
 
-public class SectionActivity extends ActionBarActivity {
+public class SectionActivity extends BaseActivity {
 
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -183,7 +186,7 @@ public class SectionActivity extends ActionBarActivity {
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
-
+			if(hint.getVisibility() == View.VISIBLE) hint.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
@@ -193,8 +196,15 @@ public class SectionActivity extends ActionBarActivity {
 
 		@Override
 		public void onPageSelected(int arg0) {
+			
 			SectionActivity.this.chapterNo = arg0 + 1;
 			SectionActivity.this.setTitle(initTitle());
+			
+			HashMap<String,String> map = new HashMap<String, String>();
+	        map.put("书编号", bookId + "");
+	        map.put("章节号", chapterNo + "");
+	        MobclickAgent.onEvent(SectionActivity.this, "查看章", map);
+			
 		}
 
 	}
@@ -432,6 +442,10 @@ public class SectionActivity extends ActionBarActivity {
 				hint.setText(c.getString(2));
 				
 //			hint.setText(c.getString(c.getColumnIndex("sectionText ")));
+				HashMap<String,String> map = new HashMap<String, String>();
+		        map.put("节编号", c.getInt(0) + "");
+		        MobclickAgent.onEvent(SectionActivity.this, "查看注释", map);
+				
 				hint.setVisibility(View.VISIBLE);
 				
 			}

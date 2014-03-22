@@ -1,6 +1,5 @@
 package com.joker.livingstone;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 
-public class WelcomeActivity extends Activity {
+public class WelcomeActivity extends BaseActivity {
 	private static final int GOTO_MAIN_ACTIVITY = 0;  
 
 
@@ -22,7 +21,9 @@ public class WelcomeActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN); 
         
         setContentView(R.layout.activity_welcome);
+        
 
+        
         MyTimer timer = new MyTimer();  
         timer.start();//Æô¶¯Ïß³Ì  
     }  
@@ -58,5 +59,6 @@ public class WelcomeActivity extends Activity {
                 e.printStackTrace();  
             }  
         }  
-    }  
+    }
+
 }
