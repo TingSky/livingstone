@@ -13,7 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
-import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +68,17 @@ public class IndexActivity extends BaseActivity{
 		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
+		drawerList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				drawerLayout.closeDrawers();
+			    if(position == 2){
+			    	startActivity(new Intent(IndexActivity.this , FeedbackActivity.class));
+			    }
+			}
+		});
 		
 		bar = getSupportActionBar();
 		drawerToggle = new ActionBarDrawerToggle(
@@ -248,7 +259,6 @@ public class IndexActivity extends BaseActivity{
 	    if (drawerToggle.onOptionsItemSelected(item)) {
 	    	return true;
 	    }
-	 
 	    return super.onOptionsItemSelected(item);
 	}
 

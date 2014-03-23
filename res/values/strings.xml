@@ -9,9 +9,9 @@
     
      <string-array name="menu">
         <item>首页</item>
-        <item>经文</item>
-        <item>讨论</item>
         <item>个人中心</item>
+        <item>反馈</item>
+        <item>关于</item>
     </string-array>
     <string name="drawer_open">菜单</string>
     <string name="drawer_close">活石</string>
@@ -21,7 +21,7 @@
     <string name="action_more">更多</string>
     
     <string name="search_hint">请输入经文关键词</string>
-    <string name="feedback_hint">我想吐槽！</string>
+    <string name="feedback_hint">我吐槽：</string>
     
     <string name="test">Test!测试Test!测试Test!测试Test!测试Test!测试Test!测试</string>
 

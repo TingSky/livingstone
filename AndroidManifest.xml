@@ -53,6 +53,8 @@
     	</activity>
     	
         
+        <activity android:name=".FeedbackActivity"/>
+        
         <provider android:name=".util.SearchProvider" 
             android:authorities="com.android.search.SearchSuggestionSampleProvider" >
 		</provider>
