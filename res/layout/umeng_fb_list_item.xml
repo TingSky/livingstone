@@ -42,14 +42,16 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_below="@id/umeng_fb_list_reply_header" >
 
         <TextView
             android:id="@+id/umeng_fb_reply_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/umeng_fb_reply_right_bg"
             android:maxWidth="200dp"
             android:text="@string/test"
