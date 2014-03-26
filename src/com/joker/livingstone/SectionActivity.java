@@ -17,25 +17,21 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DialogHelper;
@@ -465,15 +461,17 @@ public class SectionActivity extends BaseActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.index, menu);
+		getMenuInflater().inflate(R.menu.section, menu);
+		MenuItem discuss = menu.findItem(R.id.action_discuss);
+		discuss.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+//				Intent i = new Intent(SectionActivity.this, DiscussActivity.class);
+//				i.set
+				return false;
+			}
+		});
 
-		// SearchManager searchManager =
-		// (SearchManager)
-		// IndexActivity.this.getSystemService(Context.SEARCH_SERVICE);
-		// SupportMenuItem searchMenuItem = ((SupportMenuItem)
-		// menu.findItem(R.id.action_serach));
-		// SearchView searchView = (SearchView) searchMenuItem.getActionView();
-		// searchView.setSearchableInfo(searchManager.getSearchableInfo(IndexActivity.this.getComponentName()));
 
 		return super.onCreateOptionsMenu(menu);
 	}

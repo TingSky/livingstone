@@ -1,8 +1,16 @@
 package com.joker.livingstone;
 
+import java.io.InputStream;
 import java.util.HashMap;
 
-import android.app.ProgressDialog;
+import junit.framework.Assert;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -15,12 +23,10 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.format.Time;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,8 +40,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DialogHelper;
+import com.joker.livingstone.util.HttpHelper;
 import com.joker.livingstone.util.SearchProvider;
 import com.umeng.analytics.MobclickAgent;
 
@@ -99,6 +107,15 @@ public class SearchActivity extends BaseActivity{
 		
 		
 		query = i.getStringExtra(SearchManager.QUERY);
+		if(query.equals("ªÓ Ø")){
+			TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+			String imei = tm.getDeviceId();
+			String url = Const.PATH + "regEaster?imei=" + imei;
+			
+//			String no = HttpHelper.getString(url);
+			Log.d("url" , url);
+			
+		}
 		
 		SearchRecentSuggestions srs = new SearchRecentSuggestions(this ,
 				SearchProvider.AUTHORITY , SearchProvider.MODE);
