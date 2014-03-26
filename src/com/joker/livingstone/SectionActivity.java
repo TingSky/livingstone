@@ -466,9 +466,12 @@ public class SectionActivity extends BaseActivity {
 		discuss.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-//				Intent i = new Intent(SectionActivity.this, DiscussActivity.class);
-//				i.set
-				return false;
+				Intent i = new Intent(SectionActivity.this, DiscussActivity.class);
+				i.putExtra("bookId", bookId);
+				i.putExtra("chapterNo", chapterNo);
+				i.putExtra("bookName", bookName);
+				SectionActivity.this.startActivity(i);
+				return true;
 			}
 		});
 
