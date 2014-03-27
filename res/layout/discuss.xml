@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_section"
+    android:orientation="horizontal"
+    android:paddingLeft="10.0dip"
+    android:paddingTop="5.0dip"
+    android:paddingBottom="5.0dip"
+    android:paddingRight="10.0dip" >
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:text="昵称"
+        android:textColor="#88444444"
+        android:textSize="14.0sp" />
+
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@id/nickname"
+        android:layout_marginLeft="6dip"
+        android:layout_marginRight="6dip"
+        android:gravity="left"
+        android:text="来自"
+        android:textColor="#88444444"
+        android:textSize="14.0sp" />
+    
+    <TextView
+        android:id="@+id/ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@id/from"
+        android:gravity="left"
+        android:text="[火星]"
+        android:textColor="#88444444"
+        android:textSize="14.0sp" />
+    
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/nickname"
+        android:gravity="left"
+        android:text="@string/test"
+        android:layout_marginTop="6dip"
+        android:layout_marginBottom="6dip"
+        android:textColor="#ff444444"
+        android:textSize="16.0sp" />
+    
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_below="@id/comment"
+        android:gravity="left"
+        android:text="2014-03-27 12:40:57"
+        android:textColor="#88444444"
+        android:textSize="12.0sp" />
+    
+<!--     <TextView -->
+<!--         android:id="@+id/ip" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_gravity="center_vertical" -->
+<!--         android:layout_toRightOf="@id/from" -->
+<!--         android:lineSpacingExtra="5dp" -->
+<!--         android:gravity="left" -->
+<!--         android:text="@string/test" -->
+<!--         android:textColor="#ff444444" -->
+<!--         android:textSize="16.0sp" /> -->
+ 
+
+</RelativeLayout>
