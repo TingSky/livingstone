@@ -45,6 +45,9 @@
         <activity
             android:name=".DiscussActivity" 
             android:label="@string/app_name" />
+         <activity
+            android:name=".EasterActivity" 
+            android:label="@string/app_name" />
         
         <activity 
             android:name=".SearchActivity" android:launchMode="singleTop">

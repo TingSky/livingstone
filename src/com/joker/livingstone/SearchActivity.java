@@ -108,12 +108,13 @@ public class SearchActivity extends BaseActivity{
 		
 		query = i.getStringExtra(SearchManager.QUERY);
 		if(query.equals("ªÓ Ø")){
-			TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-			String imei = tm.getDeviceId();
-			String url = Const.PATH + "regEaster?imei=" + imei;
+			startActivity(new Intent(this, EasterActivity.class));
+//			TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
+//			String imei = tm.getDeviceId();
+//			String url = Const.PATH + "regEaster?imei=" + imei;
 			
 //			String no = HttpHelper.getString(url);
-			Log.d("url" , url);
+//			Log.d("url" , url);
 			
 		}
 		
