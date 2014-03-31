@@ -49,14 +49,14 @@ public class EasterActivity extends BaseActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_easter);
-		mWebView = (WebView) findViewById(R.id.webView);
-		mWebView.getSettings().setJavaScriptEnabled(true);
-		mWebView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-		
-		mWebView.addJavascriptInterface(new runJavaScript(), "wst");
-		
-		mWebView.loadUrl("file:///android_asset/easter.html");
-		
+//		mWebView = (WebView) findViewById(R.id.webView);
+//		mWebView.getSettings().setJavaScriptEnabled(true);
+//		mWebView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+//		
+//		mWebView.addJavascriptInterface(new runJavaScript(), "wst");
+//		
+//		mWebView.loadUrl("file:///android_asset/easter.html");
+//		
 //		getDataFromIntent();
 		initDrawerAndActionBar("¸ÐÐ»Éñ£¡");
 //		loadChapterData();
