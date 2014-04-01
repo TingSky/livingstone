@@ -1,11 +1,14 @@
 package com.joker.livingstone.util;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
+import android.content.Context;
 import android.util.Log;
 
 public class HttpHelper {
@@ -31,4 +34,50 @@ public class HttpHelper {
         }
 		return "";  
 	}
+	
+	public static String getString(Context context ,String urlString , Map<String, String> params){
+		String resultData = "";
+		try{
+			URL url = new URL(urlString);
+            //使用HttpURLConnection打开连接  
+            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection(); 
+            //设置是否向connection输出，因为这个是post请求，参数要放在 http正文内，因此需要设为true
+            urlConn.setDoOutput(true);
+            //Post方式请求
+            urlConn.setRequestMethod("POST");
+            //配置本次连接的Content-type，配置为application/x-www-form-urlencoded的意思是正文是urlencoded编码过的form参数，下面我们可以看到我们对正文内容使用URLEncoder.encode进行编码
+            urlConn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            //连接，从postUrl.openConnection()至此的配置必须要在connect之前完成， 要注意的是connection.getOutputStream会隐含的进行connect。
+            urlConn.connect();
+            DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+            String content = "";
+            for (String item : params.keySet()) {
+				content += item + "=" + params.get(item) + "&";
+			}
+            content += "imei=" + DeviceUtil.getImei(context);
+            
+            //得到读取的内容(流)  
+            InputStreamReader in = new InputStreamReader(urlConn.getInputStream());  
+            // 为输出创建BufferedReader  
+            BufferedReader buffer = new BufferedReader(in);  
+            String inputLine = null;  
+            //使用循环来读取获得的数据  
+            while (((inputLine = buffer.readLine()) != null)){  
+                resultData += inputLine ;  
+            }
+            return resultData;
+        }  
+        catch (IOException e){  
+            Log.e("HttpHelper", "IOException");  
+        }
+		return "";  
+	}
+	
+	private static String urlBuilder(Context context ,String url){
+		String imei = "imei=" + DeviceUtil.getImei(context);
+		String userid = null;
+		return userid;
+	}
+	
+	
 }
