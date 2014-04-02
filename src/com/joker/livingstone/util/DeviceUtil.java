@@ -1,5 +1,7 @@
 package com.joker.livingstone.util;
 
+import com.joker.livingstone.EasterActivity;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
@@ -7,7 +9,7 @@ import android.telephony.TelephonyManager;
 public class DeviceUtil {
 	public static void initParams(Context context){
 		Const.IMEI = getImei(context);
-		Const.USERID = getUserid(context);
+		Const.USERID = getUserId(context);
 	}
 	
 
@@ -19,11 +21,17 @@ public class DeviceUtil {
 		return Const.IMEI;
 	}
 	
-	private static Object getUserid(Context context) {
+	public static String getUserId(Context context) {
 		if(Const.USERID == null){
 			SharedPreferences sp = context.getSharedPreferences("user", Context.MODE_PRIVATE);
 			Const.USERID = sp.getString("userid", "");
 		}
 		return Const.USERID;
+	}
+
+	public static void setUserId(Context context , String userid){
+		SharedPreferences.Editor edit = context.getSharedPreferences("user" ,Context.MODE_PRIVATE).edit();
+		edit.putString("userid", userid).commit();
+		Const.USERID = userid ;
 	}
 }

@@ -54,8 +54,11 @@ public class HttpHelper {
             for (String item : params.keySet()) {
 				content += item + "=" + params.get(item) + "&";
 			}
-            content += "imei=" + DeviceUtil.getImei(context);
-            
+            content = urlBuilder(context, content);
+            //DataOutputStream.writeBytes将字符串中的16位的unicode字符以8位的字符形式写道流里面
+            out.writeBytes(content); 
+            out.flush();
+            out.close(); 
             //得到读取的内容(流)  
             InputStreamReader in = new InputStreamReader(urlConn.getInputStream());  
             // 为输出创建BufferedReader  
@@ -75,8 +78,8 @@ public class HttpHelper {
 	
 	private static String urlBuilder(Context context ,String url){
 		String imei = "imei=" + DeviceUtil.getImei(context);
-		String userid = null;
-		return userid;
+		String userid = "userid=" + DeviceUtil.getUserId(context);
+		return url + imei + "&" + userid;
 	}
 	
 	
