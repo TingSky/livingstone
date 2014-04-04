@@ -27,6 +27,7 @@ import android.widget.ListView;
 
 import com.joker.livingstone.util.DBHelper;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 
 public class IndexActivity extends BaseActivity{
@@ -50,7 +51,8 @@ public class IndexActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_index);
 		mGridView = (GridView) findViewById(R.id.gridView);
-//		mGridView.setTextFilterEnabled(true);
+		UmengUpdateAgent.setUpdateCheckConfig(false);
+		UmengUpdateAgent.update(this);
 		
 		initDrawerAndActionBar();
 		loadBibleData();

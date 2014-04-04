@@ -1,5 +1,7 @@
 package com.joker.livingstone;
 
+import com.joker.livingstone.util.DeviceUtil;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +24,7 @@ public class WelcomeActivity extends BaseActivity {
         
         setContentView(R.layout.activity_welcome);
         
-
+        DeviceUtil.initParams(this);
         
         MyTimer timer = new MyTimer();  
         timer.start();//Æô¶¯Ïß³Ì  

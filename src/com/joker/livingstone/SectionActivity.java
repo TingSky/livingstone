@@ -151,7 +151,7 @@ public class SectionActivity extends BaseActivity {
 	
 	private ListView loadPage(int chapterNo , ListView target){
 		
-		String sql2 = "SELECT seqId as _id , sectionNo , sectionText , title  from section "
+		String sql2 = "SELECT seqId as _id , sectionNo , sectionText , noteText , title  from section "
 				+ "where bookId = ? and chapterNo = ? "
 				+ "order by sectionIndex ";
 		Cursor c2 = DBHelper.get().rawQuery(sql2, new String[]{bookId+"" , chapterNo + ""});
@@ -345,7 +345,8 @@ public class SectionActivity extends BaseActivity {
 		@Override
 		public View newView(Context context, Cursor cursor,
 				ViewGroup parent) {
-			int type = cursor.getInt(3);
+//			int type = cursor.getInt(3);
+			int type = cursor.getInt(cursor.getColumnIndex("title"));
 			return inflater.inflate(mLayout[type], parent, false);
 		}
 
@@ -357,7 +358,7 @@ public class SectionActivity extends BaseActivity {
 			
 //			Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/xingothic.otf");
 			
-			int type = cursor.getInt(3);
+			int type = cursor.getInt(cursor.getColumnIndex("title"));
 			//最不靠谱的一段，毫无复用性
 			if(type > 0){
 				TextView v = (TextView) view.findViewById(R.id.title);
@@ -435,7 +436,9 @@ public class SectionActivity extends BaseActivity {
 				hint.setVisibility(View.INVISIBLE);
 			}else{
 				Cursor c = (Cursor) parent.getItemAtPosition(position);
-				hint.setText(c.getString(2));
+				String note = c.getString(c.getColumnIndex("noteText"));
+				if(note.equals("")) return ;
+				hint.setText(note);
 				
 //			hint.setText(c.getString(c.getColumnIndex("sectionText ")));
 				HashMap<String,String> map = new HashMap<String, String>();

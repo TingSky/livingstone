@@ -1,5 +1,7 @@
 package com.joker.livingstone.util;
 
+import java.lang.reflect.Field;
+
 import com.joker.livingstone.EasterActivity;
 
 import android.content.Context;
@@ -9,7 +11,8 @@ import android.telephony.TelephonyManager;
 public class DeviceUtil {
 	public static void initParams(Context context){
 		Const.IMEI = getImei(context);
-		Const.USERID = getUserId(context);
+		Const.USERID = get(context , "IMEI");
+		Const.EGGID = get(context, "EGGID");
 	}
 	
 
@@ -21,17 +24,40 @@ public class DeviceUtil {
 		return Const.IMEI;
 	}
 	
-	public static String getUserId(Context context) {
-		if(Const.USERID == null){
-			SharedPreferences sp = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-			Const.USERID = sp.getString("userid", "");
+	
+	public static String get(Context context , String key){
+		String data = null;
+		try {
+			Class<?> c = Class.forName("com.joker.livingstone.util.Const");
+			Object o = c.newInstance();
+			Field f = c.getField(key);
+			data = (String) f.get(o);
+			if(data == null || data == ""){
+				SharedPreferences sp = context.getSharedPreferences("user" , Context.MODE_PRIVATE);
+				f.set(o, sp.getString(key, ""));
+			}
+			
+			return data;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return Const.USERID;
+		return "";
+	}
+	
+	public static void set(Context context , String key , String value){
+		SharedPreferences.Editor edit = context.getSharedPreferences("user" ,Context.MODE_PRIVATE).edit();
+		edit.putString(key, value).commit();
+		try {
+			Class<?> c = Class.forName("com.joker.livingstone.util.Const");
+			Object o = c.newInstance();
+			Field f = c.getField(key);
+			f.set(o, value);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public static void setUserId(Context context , String userid){
-		SharedPreferences.Editor edit = context.getSharedPreferences("user" ,Context.MODE_PRIVATE).edit();
-		edit.putString("userid", userid).commit();
-		Const.USERID = userid ;
-	}
 }

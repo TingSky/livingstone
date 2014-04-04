@@ -124,6 +124,7 @@
 	            
 	        <Button 
 	            android:id="@+id/hangout"
+	            android:tag="hangout"
 	            android:layout_width="0dp"
 	        	android:layout_height="wrap_content"
 	        	android:gravity="center"  
@@ -132,6 +133,7 @@
 
 	        <Button
 	            android:id="@+id/reg"
+	            android:tag="reg"
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:gravity="center"  

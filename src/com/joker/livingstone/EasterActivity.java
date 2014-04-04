@@ -3,18 +3,16 @@ package com.joker.livingstone;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +21,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.joker.livingstone.DiscussActivity.LoadPageListener;
 import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DeviceUtil;
 import com.joker.livingstone.util.DialogHelper;
@@ -46,6 +42,8 @@ public class EasterActivity extends BaseActivity{
     private ActionBar bar;
     
     private int userid;
+    
+    private TextView mTextView;
     private View regForm;
     private Button reg;
     private Button hangout;
@@ -57,6 +55,7 @@ public class EasterActivity extends BaseActivity{
     private String password;
     private String nickname;
     
+    private Map<String, String> map;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +70,7 @@ public class EasterActivity extends BaseActivity{
 
 	}
 	private void findView() {
+		mTextView = (TextView)findViewById(R.id.text);
 		regForm = findViewById(R.id.reg_area);
 		reg = (Button)findViewById(R.id.reg);
 		hangout = (Button)findViewById(R.id.hangout);
@@ -127,6 +127,31 @@ public class EasterActivity extends BaseActivity{
 	
 	
 	private void getRank() {
+		String eggid = DeviceUtil.get(this,"EGGID");
+		if(eggid == null ||eggid.equals("")){
+			getRankFromServer();
+		}else{
+			displayRank(eggid);
+		}
+		
+	}
+	
+	/*
+	 * 展示找到彩蛋的排名
+	 * 如果已经注册则不显示注册信息
+	 */
+	private void displayRank(String rank){
+		String s = getResources().getString(R.string.reg_tag);
+		mTextView.setText(s.format(s, rank));
+		
+		//已经注册过
+		if(DeviceUtil.get(EasterActivity.this , "USERID") != null){
+			regForm.setVisibility(View.GONE);
+			reg.setVisibility(View.GONE);
+		}
+	}
+	
+	private void getRankFromServer() {
 		String imei = DeviceUtil.getImei(this);
 		String url = Const.PATH + "applyEgg?imei=" + imei;
 		new AsyncTask<String, Void, Integer>() {
@@ -138,7 +163,7 @@ public class EasterActivity extends BaseActivity{
 				try {
 					json = new JSONObject(data);
 					if (json.getInt("rtn") == 0) {
-						userid = json.getJSONObject("data").getInt("used");
+						userid = json.getJSONObject("data").getInt("userId");
 						return json.getJSONObject("data").getInt("eggId");
 					}
 				} catch (JSONException e) {
@@ -149,26 +174,15 @@ public class EasterActivity extends BaseActivity{
 			
 			@Override
 			protected void onPostExecute(Integer result) {
-				TextView t = (TextView)findViewById(R.id.text);
-				String s = getResources().getString(R.string.reg_tag);
-				t.setText(s.format(s, result));
 				
-				DeviceUtil.setUserId(EasterActivity.this, userid + "");
-				
-				//已经注册过
-				if(DeviceUtil.getUserId(EasterActivity.this) != null){
-					regForm.setVisibility(View.GONE);
-					reg.setVisibility(View.GONE);
-				}
+				displayRank(result + "");
+				DeviceUtil.set(EasterActivity.this, "USERID" , userid + "");
 				
 				super.onPostExecute(result);
 			}
 			
 		}.execute(url);
-		
-		TextView t = (TextView)findViewById(R.id.text);
-		String s = getResources().getString(R.string.reg_tag);
-		t.setText(s);
+
 	}
 	
 	private void setListener(){
@@ -185,7 +199,7 @@ public class EasterActivity extends BaseActivity{
 			if(v.getTag().equals("reg")){
 				if(!checkInput()) return ;
 				else{
-					Map<String, String> map = new HashMap<String, String>();
+					map = new HashMap<String, String>();
 					map.put("mobileNo", phone);
 					map.put("password", password);
 					map.put("userName", nickname);
@@ -247,12 +261,12 @@ public class EasterActivity extends BaseActivity{
 
 		@Override
 		protected String doInBackground(String... url) {
-			String data = HttpHelper.getString(url[0]);
+			String data = HttpHelper.getString(EasterActivity.this , url[0] , map);
 			JSONObject json;
 			try {
 				json = new JSONObject(data);
 				if (json.getInt("rtn") == 0) {
-					DeviceUtil.setUserId(EasterActivity.this, json.getJSONObject("data").getString("userId"));
+					DeviceUtil.set(EasterActivity.this, "USERID",json.getJSONObject("data").getString("userId"));
 					return "OK";
 				}else{
 					return json.getString("data");

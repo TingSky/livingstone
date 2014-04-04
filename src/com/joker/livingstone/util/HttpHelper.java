@@ -1,9 +1,10 @@
 package com.joker.livingstone.util;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class HttpHelper {
 		String resultData = "";
 		try{
 			URL url = new URL(urlString);
+			Log.d("HttpHelper" , urlString);
             //使用HttpURLConnection打开连接  
             HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();  
             //得到读取的内容(流)  
@@ -46,17 +48,18 @@ public class HttpHelper {
             //Post方式请求
             urlConn.setRequestMethod("POST");
             //配置本次连接的Content-type，配置为application/x-www-form-urlencoded的意思是正文是urlencoded编码过的form参数，下面我们可以看到我们对正文内容使用URLEncoder.encode进行编码
-            urlConn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            urlConn.setRequestProperty("Content-Type","application/x-www-form-urlencoded; charset=utf-8");
             //连接，从postUrl.openConnection()至此的配置必须要在connect之前完成， 要注意的是connection.getOutputStream会隐含的进行connect。
             urlConn.connect();
-            DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+//            DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+            Writer out = new OutputStreamWriter(urlConn.getOutputStream(), "UTF-8");
             String content = "";
             for (String item : params.keySet()) {
 				content += item + "=" + params.get(item) + "&";
 			}
             content = urlBuilder(context, content);
             //DataOutputStream.writeBytes将字符串中的16位的unicode字符以8位的字符形式写道流里面
-            out.writeBytes(content); 
+            out.write(content); 
             out.flush();
             out.close(); 
             //得到读取的内容(流)  
@@ -68,6 +71,7 @@ public class HttpHelper {
             while (((inputLine = buffer.readLine()) != null)){  
                 resultData += inputLine ;  
             }
+            
             return resultData;
         }  
         catch (IOException e){  
@@ -78,7 +82,7 @@ public class HttpHelper {
 	
 	private static String urlBuilder(Context context ,String url){
 		String imei = "imei=" + DeviceUtil.getImei(context);
-		String userid = "userid=" + DeviceUtil.getUserId(context);
+		String userid = "userid=" + DeviceUtil.get(context, "USERID");
 		return url + imei + "&" + userid;
 	}
 	
