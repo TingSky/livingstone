@@ -39,6 +39,7 @@ public class HttpHelper {
 	
 	public static String getString(Context context ,String urlString , Map<String, String> params){
 		String resultData = "";
+		String content = "";
 		try{
 			URL url = new URL(urlString);
             //使用HttpURLConnection打开连接  
@@ -53,7 +54,6 @@ public class HttpHelper {
             urlConn.connect();
 //            DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
             Writer out = new OutputStreamWriter(urlConn.getOutputStream(), "UTF-8");
-            String content = "";
             for (String item : params.keySet()) {
 				content += item + "=" + params.get(item) + "&";
 			}
@@ -71,18 +71,23 @@ public class HttpHelper {
             while (((inputLine = buffer.readLine()) != null)){  
                 resultData += inputLine ;  
             }
-            
+            Log.d("url" , urlString);
+            Log.d("param" , content);
+            Log.d("result" ,resultData);
             return resultData;
         }  
         catch (IOException e){  
-            Log.e("HttpHelper", "IOException");  
+            Log.e("HttpHelper", "IOException"); 
+            Log.d("url" , urlString);
+            Log.d("param" , content);
+            Log.d("result" ,resultData);
         }
 		return "";  
 	}
 	
 	private static String urlBuilder(Context context ,String url){
 		String imei = "imei=" + DeviceUtil.getImei(context);
-		String userid = "userid=" + DeviceUtil.get(context, "USERID");
+		String userid = "userId=" + DeviceUtil.get(context, "USERID");
 		return url + imei + "&" + userid;
 	}
 	

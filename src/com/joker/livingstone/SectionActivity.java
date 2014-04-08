@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DeviceUtil;
 import com.joker.livingstone.util.DialogHelper;
 import com.umeng.analytics.MobclickAgent;
 
@@ -464,6 +465,10 @@ public class SectionActivity extends BaseActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		String imei = DeviceUtil.get(this, "USERID");
+		if(imei == null || imei.equals("")){
+			return false;
+		}
 		getMenuInflater().inflate(R.menu.section, menu);
 		MenuItem discuss = menu.findItem(R.id.action_discuss);
 		discuss.setOnMenuItemClickListener(new OnMenuItemClickListener() {

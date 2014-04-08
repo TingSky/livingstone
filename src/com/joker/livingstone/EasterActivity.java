@@ -30,7 +30,6 @@ import com.joker.livingstone.util.DialogHelper;
 import com.joker.livingstone.util.HttpHelper;
 
 
-@SuppressLint({ "JavascriptInterface", "SetJavaScriptEnabled", "NewApi" })
 public class EasterActivity extends BaseActivity{
 	
 	private ActionBarDrawerToggle drawerToggle;
@@ -43,6 +42,7 @@ public class EasterActivity extends BaseActivity{
     
     private int userid;
     
+    private View content;
     private TextView mTextView;
     private View regForm;
     private Button reg;
@@ -70,6 +70,9 @@ public class EasterActivity extends BaseActivity{
 
 	}
 	private void findView() {
+		content = findViewById(R.id.content);
+		content.setVisibility(View.INVISIBLE);
+		
 		mTextView = (TextView)findViewById(R.id.text);
 		regForm = findViewById(R.id.reg_area);
 		reg = (Button)findViewById(R.id.reg);
@@ -141,11 +144,13 @@ public class EasterActivity extends BaseActivity{
 	 * 如果已经注册则不显示注册信息
 	 */
 	private void displayRank(String rank){
+		content.setVisibility(View.VISIBLE);
 		String s = getResources().getString(R.string.reg_tag);
 		mTextView.setText(s.format(s, rank));
 		
 		//已经注册过
-		if(DeviceUtil.get(EasterActivity.this , "USERID") != null){
+		String userid = DeviceUtil.get(EasterActivity.this , "USERID");
+		if(userid == null ||!userid.equals("")){
 			regForm.setVisibility(View.GONE);
 			reg.setVisibility(View.GONE);
 		}
@@ -155,7 +160,11 @@ public class EasterActivity extends BaseActivity{
 		String imei = DeviceUtil.getImei(this);
 		String url = Const.PATH + "applyEgg?imei=" + imei;
 		new AsyncTask<String, Void, Integer>() {
-
+			@Override
+			protected void onPreExecute() {
+				DialogHelper.showDialog(EasterActivity.this);
+				super.onPreExecute();
+			}
 			@Override
 			protected Integer doInBackground(String... url) {
 				String data = HttpHelper.getString(url[0]);
@@ -174,7 +183,7 @@ public class EasterActivity extends BaseActivity{
 			
 			@Override
 			protected void onPostExecute(Integer result) {
-				
+				DialogHelper.dismiss();
 				displayRank(result + "");
 				DeviceUtil.set(EasterActivity.this, "USERID" , userid + "");
 				
@@ -284,18 +293,18 @@ public class EasterActivity extends BaseActivity{
 				DialogHelper.showFinishDialog(EasterActivity.this, "注册成功！");
 			}else if(result.equals("ERR")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "出错了，请与我们联系，谢谢");
-			}else if(result.equals(10)){
+			}else if(result.equals("10")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "imei为空");	
-			}else if(result.equals(11)){
+			}else if(result.equals("11")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "手机号码为空" , false);	
-			}else if(result.equals(12)){
+			}else if(result.equals("12")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "手机号码不合法哦" , false);	
-			}else if(result.equals(13)){
+			}else if(result.equals("13")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "用户昵称为空" , false);	
-			}else if(result.equals(14)){
+			}else if(result.equals("14")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "出错了，请与我们联系，谢谢");	
-			}else if(result.equals(15)){
-				DialogHelper.showFinishDialog(EasterActivity.this, "该手机号码已经注册了哦");	
+			}else if(result.equals("15")){
+				DialogHelper.showFinishDialog(EasterActivity.this, "该手机号码已经注册了哦" , false);	
 			}
 			super.onPostExecute(result);
 		}

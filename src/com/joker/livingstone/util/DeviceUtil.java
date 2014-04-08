@@ -11,7 +11,7 @@ import android.telephony.TelephonyManager;
 public class DeviceUtil {
 	public static void initParams(Context context){
 		Const.IMEI = getImei(context);
-		Const.USERID = get(context , "IMEI");
+		Const.USERID = get(context , "USERID");
 		Const.EGGID = get(context, "EGGID");
 	}
 	

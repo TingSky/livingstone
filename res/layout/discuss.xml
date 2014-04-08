@@ -6,7 +6,6 @@
     android:orientation="horizontal"
     android:paddingLeft="10.0dip"
     android:paddingTop="5.0dip"
-    android:paddingBottom="5.0dip"
     android:paddingRight="10.0dip" >
 
     <TextView
@@ -79,6 +78,16 @@
 <!--         android:text="@string/test" -->
 <!--         android:textColor="#ff444444" -->
 <!--         android:textSize="16.0sp" /> -->
- 
+ 		<ToggleButton
+	        android:id="@+id/agree"
+	        android:layout_width="wrap_content"
+	        android:layout_height="30dp"
+	        android:layout_gravity="center_vertical"
+	        android:layout_below="@id/comment"
+	        android:layout_alignBaseline="@id/date"
+	        android:layout_alignParentRight="true"
+	        android:text="32赞"
+	        android:textColor="#88444444"
+        	android:textSize="12.0sp" />
 
 </RelativeLayout>

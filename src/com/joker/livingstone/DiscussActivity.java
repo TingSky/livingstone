@@ -2,6 +2,7 @@ package com.joker.livingstone;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,13 +19,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.ToggleButton;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
 
 import com.joker.livingstone.util.Const;
@@ -47,13 +53,15 @@ public class DiscussActivity extends BaseActivity {
 	private ListView mListView;
 
 	private String query;
-	private ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
+	private ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter adapter;
 	
 	//最后一条评论的seqid
 	private int cid;
 	//剩下多少页评论
 	private int pageTotal;
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,9 +128,11 @@ public class DiscussActivity extends BaseActivity {
 	}
 
 	private void loadSearchData() {
-		String url = Const.PATH + "pullComment?bookId=" + bookId + "&chapterNo=" + chapterNo;
-
-		new PageTask().execute(url);
+		Map<String , String> postData = new HashMap<String, String>();
+		postData.put("bookId", bookId +"");
+		postData.put("chapterNo", chapterNo +"");
+		
+		new PageTask().execute(postData);
 
 		// // SimpleCursorAdapter adapter = new SimpleCursorAdapter(
 		// MyAdapter adapter = new MyAdapter(
@@ -137,7 +147,7 @@ public class DiscussActivity extends BaseActivity {
 
 	}
 
-	class PageTask extends AsyncTask<String, Void, String> {
+	class PageTask extends AsyncTask<Map<String,String>, Void, String> {
 		@Override
 		protected void onPreExecute() {
 			DialogHelper.showDialog(DiscussActivity.this);
@@ -145,26 +155,30 @@ public class DiscussActivity extends BaseActivity {
 		}
 
 		@Override
-		protected String doInBackground(String... url) {
-			String data = HttpHelper.getString(url[0]);
+		protected String doInBackground(Map<String,String>... postData) {
+			String url = Const.PATH + "pullComment";
+			String data = HttpHelper.getString(DiscussActivity.this , url ,postData[0]);
 			JSONObject json;
 			try {
 				json = new JSONObject(data);
 				if (json.getInt("rtn") == 0) {
 					pageTotal = json.getJSONObject("data").getInt("pageTotal"); 
-					JSONArray list = json.getJSONObject("data").getJSONArray("list");
+					final JSONArray list = json.getJSONObject("data").getJSONArray("list");
 					
 					for (int i = 0; i < list.length(); i++) {
-						HashMap<String, String> map = new HashMap<String, String>();
+						HashMap<String, Object> map = new HashMap<String, Object>();
 						map.put("nickName",
-								list.getJSONObject(i).getString("nickName"));
+								list.getJSONObject(i).getString("userName"));
 						map.put("addr", list.getJSONObject(i).getString("addr"));
 						map.put("content",
 								list.getJSONObject(i).getString("content"));
 						map.put("createTime",
 								list.getJSONObject(i).getString("createTime"));
-						// map.put("ip", list.getJSONObject(i).getString("ip"));
-						
+						Vote v = new Vote();
+						v.seqid = list.getJSONObject(i).getString("seqId");
+						v.isVoted = list.getJSONObject(i).getString("superId");
+						v.agree = list.getJSONObject(i).getInt("totalVote");
+						map.put("agree", v);
 						cid = list.getJSONObject(i).getInt("seqId");
 						dataList.add(map);
 					}
@@ -181,15 +195,92 @@ public class DiscussActivity extends BaseActivity {
 			if(adapter == null){
 				adapter = new SimpleAdapter(DiscussActivity.this, dataList,
 						R.layout.discuss, 
-						new String[] { "nickName", "addr","content", "createTime" }, 
-						new int[] {R.id.nickname, R.id.ip, R.id.comment, R.id.date });
+						new String[] { "nickName", "addr","content", "createTime","agree" }, 
+						new int[] { R.id.nickname, R.id.ip, R.id.comment, R.id.date, R.id.agree });
 				mListView.setAdapter(adapter);
 				mListView.setOnScrollListener(new LoadPageListener());
 			}else{
 				adapter.notifyDataSetChanged();
 			}
+			SimpleAdapter.ViewBinder binder = new ViewBinder() {
+				@Override
+				public boolean setViewValue(View view, Object data,String textRepresentation) {
+					if(view instanceof ToggleButton){
+						final Vote vote = (Vote)data;
+						final ToggleButton button = (ToggleButton)view;
+						button.setTextOn(vote.agree + "赞");
+						button.setTextOff(vote.agree + "赞");
+						button.setChecked(vote.isVoted.equals(1));
+						view.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Map<String, String> map = new HashMap<String, String>();
+								map.put("cid", vote.seqid);
+								map.put("vote", ((ToggleButton)v).isChecked()?"1":"0");
+								new VoteTask().execute(map , v );
+							}
+						});
+						
+						
+						return true;
+					}
+					return false;
+				}
+			};
+			adapter.setViewBinder(binder);
 			super.onPostExecute(result);
 		}
+	}
+	
+	class VoteTask extends AsyncTask<Object, Void, String> {
+		ToggleButton button;
+//		int agree;
+		@Override
+		protected String doInBackground(Object... obj) {
+			Map<String,String> map = (Map<String, String>) obj[0];
+			button = (ToggleButton) obj[1];
+//			agree = (Integer) obj[2];
+			String url = Const.PATH + "mvoteComment";
+			String data = HttpHelper.getString(DiscussActivity.this , url ,map);
+			JSONObject json;
+			try {
+				json = new JSONObject(data);
+				if (json.getInt("rtn") == 0) {
+					return map.get("vote");
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			return "";
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			
+			if(result.equals("0")){
+				String s = button.getTextOn().toString().replace("赞", "");
+				int i = Integer.parseInt(s);
+				Log.d("e",i+"");
+				button.setChecked(false);
+				button.setTextOff(i-1 + "赞");
+				button.setText(i-1 + "赞");
+			}else if(result.equals("1")){
+				String s = button.getTextOff().toString().replace("赞", "");
+				int i = Integer.parseInt(s);
+				Log.d("e",i+"");
+				button.setChecked(true);
+				button.setTextOn(i+1 + "赞");
+				button.setText(i+1 + "赞");
+			}
+		}
+		
+	}
+	
+	class Vote{
+		String seqid ;
+		String isVoted;
+		int agree;
 	}
 
 	class LoadPageListener implements OnScrollListener {
@@ -204,9 +295,12 @@ public class DiscussActivity extends BaseActivity {
 						Toast.makeText(DiscussActivity.this, "已经是最后一条评论了哦～", Toast.LENGTH_SHORT).show();
 						return ;
 					}
-					String url = Const.PATH + "pullComment?bookId=" + bookId
-							+ "&chapterNo=" + chapterNo + "&cid=" + cid;
-					new PageTask().execute(url);
+					Map<String, String> postData = new HashMap<String, String>();
+					postData.put("bookId", bookId+"");
+					postData.put("chapterNo", chapterNo+"");
+					postData.put("cid", cid+"");
+					
+					new PageTask().execute(postData);
 					
 				}
 			}

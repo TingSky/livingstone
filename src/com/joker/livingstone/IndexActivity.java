@@ -52,7 +52,7 @@ public class IndexActivity extends BaseActivity{
 		setContentView(R.layout.activity_index);
 		mGridView = (GridView) findViewById(R.id.gridView);
 		UmengUpdateAgent.setUpdateCheckConfig(false);
-		UmengUpdateAgent.update(this);
+		UmengUpdateAgent.silentUpdate(this);
 		
 		initDrawerAndActionBar();
 		loadBibleData();
