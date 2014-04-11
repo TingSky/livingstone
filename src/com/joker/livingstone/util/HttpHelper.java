@@ -29,10 +29,14 @@ public class HttpHelper {
             while (((inputLine = buffer.readLine()) != null)){  
                 resultData += inputLine ;  
             }
+            Log.d("url" , urlString);
+            Log.d("result" ,resultData);
             return resultData;
         }  
         catch (IOException e){  
-            Log.e("HttpHelper", "IOException");  
+            Log.e("HttpHelper", "IOException");
+            Log.d("url" , urlString);
+            Log.d("result" ,resultData);
         }
 		return "";  
 	}

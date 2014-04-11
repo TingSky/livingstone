@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
@@ -25,13 +26,11 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
-import android.widget.ToggleButton;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DialogHelper;
@@ -56,8 +55,8 @@ public class DiscussActivity extends BaseActivity {
 	private ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter adapter;
 	
-	//最后一条评论的seqid
-	private int cid;
+	//用户目前处于评论第几页
+	private int currentPage;
 	//剩下多少页评论
 	private int pageTotal;
 	
@@ -73,7 +72,7 @@ public class DiscussActivity extends BaseActivity {
 
 		getDataFromIntent();
 		initDrawerAndActionBar(bookName + " · " + chapterNo + " · 讨论");
-		loadSearchData();
+		loadPageData();
 
 		// SearchRecentSuggestions suggestions=new SearchRecentSuggestions(this,
 		// SearchProvider.AUTHORITY, SearchProvider.MODE);
@@ -126,12 +125,13 @@ public class DiscussActivity extends BaseActivity {
 		bar.setHomeButtonEnabled(true);
 
 	}
-
-	private void loadSearchData() {
+	
+	//第一次加载页面
+	private void loadPageData() {
 		Map<String , String> postData = new HashMap<String, String>();
 		postData.put("bookId", bookId +"");
 		postData.put("chapterNo", chapterNo +"");
-		
+		postData.put("pageNo", ++currentPage +"");
 		new PageTask().execute(postData);
 
 		// // SimpleCursorAdapter adapter = new SimpleCursorAdapter(
@@ -156,7 +156,7 @@ public class DiscussActivity extends BaseActivity {
 
 		@Override
 		protected String doInBackground(Map<String,String>... postData) {
-			String url = Const.PATH + "pullComment";
+			String url = Const.PATH + "mpullComment";
 			String data = HttpHelper.getString(DiscussActivity.this , url ,postData[0]);
 			JSONObject json;
 			try {
@@ -167,6 +167,7 @@ public class DiscussActivity extends BaseActivity {
 					
 					for (int i = 0; i < list.length(); i++) {
 						HashMap<String, Object> map = new HashMap<String, Object>();
+						map.put("seqId", list.getJSONObject(i).getInt("seqId" + ""));
 						map.put("nickName",
 								list.getJSONObject(i).getString("userName"));
 						map.put("addr", list.getJSONObject(i).getString("addr"));
@@ -176,10 +177,10 @@ public class DiscussActivity extends BaseActivity {
 								list.getJSONObject(i).getString("createTime"));
 						Vote v = new Vote();
 						v.seqid = list.getJSONObject(i).getString("seqId");
-						v.isVoted = list.getJSONObject(i).getString("superId");
+						v.isVoted = list.getJSONObject(i).getString("voted");
 						v.agree = list.getJSONObject(i).getInt("totalVote");
 						map.put("agree", v);
-						cid = list.getJSONObject(i).getInt("seqId");
+//						cid = list.getJSONObject(i).getInt("seqId");
 						dataList.add(map);
 					}
 				}
@@ -206,23 +207,12 @@ public class DiscussActivity extends BaseActivity {
 				@Override
 				public boolean setViewValue(View view, Object data,String textRepresentation) {
 					if(view instanceof ToggleButton){
-						final Vote vote = (Vote)data;
-						final ToggleButton button = (ToggleButton)view;
+						Vote vote = (Vote)data;
+						ToggleButton button = (ToggleButton)view;
 						button.setTextOn(vote.agree + "赞");
 						button.setTextOff(vote.agree + "赞");
-						button.setChecked(vote.isVoted.equals(1));
-						view.setOnClickListener(new OnClickListener() {
-							
-							@Override
-							public void onClick(View v) {
-								Map<String, String> map = new HashMap<String, String>();
-								map.put("cid", vote.seqid);
-								map.put("vote", ((ToggleButton)v).isChecked()?"1":"0");
-								new VoteTask().execute(map , v );
-							}
-						});
-						
-						
+						button.setChecked(vote.isVoted.equals("1"));
+						view.setOnClickListener(new VoteListener(vote));
 						return true;
 					}
 					return false;
@@ -233,14 +223,29 @@ public class DiscussActivity extends BaseActivity {
 		}
 	}
 	
+	class VoteListener implements OnClickListener{
+		Vote vote;
+		public VoteListener(Vote vote) {
+			this.vote = vote;
+		}
+		@Override
+		public void onClick(View v) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("cid", vote.seqid);
+			map.put("vote", ((ToggleButton)v).isChecked()?"1":"0");
+			new VoteTask().execute(map , v , vote);
+		}
+		
+	}
+	
 	class VoteTask extends AsyncTask<Object, Void, String> {
 		ToggleButton button;
-//		int agree;
+		Vote vote;
 		@Override
 		protected String doInBackground(Object... obj) {
 			Map<String,String> map = (Map<String, String>) obj[0];
 			button = (ToggleButton) obj[1];
-//			agree = (Integer) obj[2];
+			vote = (Vote) obj[2];
 			String url = Const.PATH + "mvoteComment";
 			String data = HttpHelper.getString(DiscussActivity.this , url ,map);
 			JSONObject json;
@@ -257,22 +262,31 @@ public class DiscussActivity extends BaseActivity {
 		
 		@Override
 		protected void onPostExecute(String result) {
-			
 			if(result.equals("0")){
-				String s = button.getTextOn().toString().replace("赞", "");
-				int i = Integer.parseInt(s);
-				Log.d("e",i+"");
-				button.setChecked(false);
-				button.setTextOff(i-1 + "赞");
-				button.setText(i-1 + "赞");
+				vote.agree--;
+//				button.setChecked(false);
+//				button.setTextOff(vote.agree + "赞");
 			}else if(result.equals("1")){
-				String s = button.getTextOff().toString().replace("赞", "");
-				int i = Integer.parseInt(s);
-				Log.d("e",i+"");
-				button.setChecked(true);
-				button.setTextOn(i+1 + "赞");
-				button.setText(i+1 + "赞");
+				vote.agree++;
+//				button.setChecked(true);
+//				button.setTextOn(vote.agree + "赞");
+			}else{
+				return ;
 			}
+			vote.isVoted = (vote.isVoted.equals("1")) ? "0" : "1";
+			
+			for (Map<String,Object> map : dataList) {
+				if(map.get("seqId").toString().equals(vote.seqid + "")){
+Log.d(map.get("seqId").toString(),vote.seqid+"");
+					((Vote) map.get("agree")).isVoted =vote.isVoted;
+					((Vote) map.get("agree")).agree =vote.agree;
+Log.d(vote.isVoted + "",vote.agree+"");
+//					v.isVoted = vote.isVoted;
+//					v.agree = vote.agree;
+//					map.put("agree", v);
+				}
+			}
+			adapter.notifyDataSetChanged();
 		}
 		
 	}
@@ -291,16 +305,17 @@ public class DiscussActivity extends BaseActivity {
 			if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
 				// 判断是否滚动到底部
 				if (view.getLastVisiblePosition() == view.getCount() - 1 ) {
-					if(pageTotal < 2){
+					if(pageTotal == currentPage){
 						Toast.makeText(DiscussActivity.this, "已经是最后一条评论了哦～", Toast.LENGTH_SHORT).show();
 						return ;
 					}
-					Map<String, String> postData = new HashMap<String, String>();
-					postData.put("bookId", bookId+"");
-					postData.put("chapterNo", chapterNo+"");
-					postData.put("cid", cid+"");
-					
-					new PageTask().execute(postData);
+					loadPageData();
+//					Map<String, String> postData = new HashMap<String, String>();
+//					postData.put("bookId", bookId+"");
+//					postData.put("chapterNo", chapterNo+"");
+////					postData.put("cid", cid+"");
+//					
+//					new PageTask().execute(postData);
 					
 				}
 			}
@@ -315,42 +330,54 @@ public class DiscussActivity extends BaseActivity {
 
 	}
 
-	class ItemClickListener implements OnItemClickListener {
+//	class ItemClickListener implements OnItemClickListener {
+//
+//		@Override
+//		public void onItemClick(AdapterView<?> parent, View view, int position,
+//				long id) {
+//			// TextView t = (TextView)view.findViewById(R.id.bookName);
+//			// Toast.makeText(IndexActivity.this, position + "",
+//			// Toast.LENGTH_LONG).show();
+//
+//			Cursor c = (Cursor) parent.getItemAtPosition(position);
+//			Intent i = new Intent(DiscussActivity.this, SectionActivity.class);
+//			i.putExtra("bookId", c.getInt(1));
+//			// i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
+//			i.putExtra("bookName", c.getString(2));
+//			// i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
+//			i.putExtra("chapterNo", c.getInt(3));
+//			// i.putExtra("chapterNo",
+//			// c.getString(c.getColumnIndex("chapterNo")));
+//			i.putExtra("sectionNo", c.getInt(4));
+//			// i.putExtra("sectionNo",
+//			// c.getString(c.getColumnIndex("sectionNo")));
+//			i.putExtra("query", query);
+//
+//			DiscussActivity.this.startActivity(i);
+//			// dialog = ProgressDialog.show(SearchActivity.this , "活石"
+//			// ,"正在加载...");
+//			DialogHelper.showDialog(DiscussActivity.this);
+//		}
+//
+//	}
 
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			// TextView t = (TextView)view.findViewById(R.id.bookName);
-			// Toast.makeText(IndexActivity.this, position + "",
-			// Toast.LENGTH_LONG).show();
-
-			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			Intent i = new Intent(DiscussActivity.this, SectionActivity.class);
-			i.putExtra("bookId", c.getInt(1));
-			// i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
-			i.putExtra("bookName", c.getString(2));
-			// i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
-			i.putExtra("chapterNo", c.getInt(3));
-			// i.putExtra("chapterNo",
-			// c.getString(c.getColumnIndex("chapterNo")));
-			i.putExtra("sectionNo", c.getInt(4));
-			// i.putExtra("sectionNo",
-			// c.getString(c.getColumnIndex("sectionNo")));
-			i.putExtra("query", query);
-
-			DiscussActivity.this.startActivity(i);
-			// dialog = ProgressDialog.show(SearchActivity.this , "活石"
-			// ,"正在加载...");
-			DialogHelper.showDialog(DiscussActivity.this);
-		}
-
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		// getMenuInflater().inflate(R.menu.index, menu);
-
+//		 Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.discuss, menu);
+		MenuItem addComment = menu.findItem(R.id.action_add_comment);
+		addComment.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent i = new Intent(DiscussActivity.this , AddCommentActivity.class);
+				i.putExtra("bookId", bookId);
+				i.putExtra("chapterNo", chapterNo);
+				startActivity(i);
+				return true;
+			}
+		});
 		return super.onCreateOptionsMenu(menu);
 	}
 

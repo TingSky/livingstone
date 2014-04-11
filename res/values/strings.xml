@@ -20,9 +20,12 @@
     <string name="action_user">我</string>
     <string name="action_more">更多</string>
     <string name="action_discuss">讨论</string>
+    <string name="action_add_comment">发表评论</string>
     
     <string name="easter_hangout">不注册</string>
     <string name="easter_reg">注册</string>
+    
+    <string name="comment_title">写写你的感动</string>
     
     <string name="search_hint">请输入经文关键词</string>
     <string name="feedback_hint">我吐槽：</string>

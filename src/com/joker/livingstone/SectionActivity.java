@@ -465,9 +465,9 @@ public class SectionActivity extends BaseActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		String imei = DeviceUtil.get(this, "USERID");
-		if(imei == null || imei.equals("")){
-			return false;
+		String userid = DeviceUtil.get(this, "USERID");
+		if(userid == null || userid.equals("")){
+			return true;
 		}
 		getMenuInflater().inflate(R.menu.section, menu);
 		MenuItem discuss = menu.findItem(R.id.action_discuss);

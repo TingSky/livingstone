@@ -130,6 +130,7 @@ public class EasterActivity extends BaseActivity{
 	
 	
 	private void getRank() {
+		//如果本地存放了彩蛋编号就不从服务器拿数据
 		String eggid = DeviceUtil.get(this,"EGGID");
 		if(eggid == null ||eggid.equals("")){
 			getRankFromServer();
@@ -150,7 +151,7 @@ public class EasterActivity extends BaseActivity{
 		
 		//已经注册过
 		String userid = DeviceUtil.get(EasterActivity.this , "USERID");
-		if(userid == null ||!userid.equals("")){
+		if(!userid.equals("")){
 			regForm.setVisibility(View.GONE);
 			reg.setVisibility(View.GONE);
 		}
@@ -184,8 +185,12 @@ public class EasterActivity extends BaseActivity{
 			@Override
 			protected void onPostExecute(Integer result) {
 				DialogHelper.dismiss();
+				DeviceUtil.set(EasterActivity.this, "EGGID" , result +"");
+				//用户如果未注册返回userid为0
+				if(userid != 0){
+					DeviceUtil.set(EasterActivity.this, "USERID" , userid + "");
+				}
 				displayRank(result + "");
-				DeviceUtil.set(EasterActivity.this, "USERID" , userid + "");
 				
 				super.onPostExecute(result);
 			}

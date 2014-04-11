@@ -2,11 +2,10 @@ package com.joker.livingstone.util;
 
 import java.lang.reflect.Field;
 
-import com.joker.livingstone.EasterActivity;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class DeviceUtil {
 	public static void initParams(Context context){
@@ -29,14 +28,16 @@ public class DeviceUtil {
 		String data = null;
 		try {
 			Class<?> c = Class.forName("com.joker.livingstone.util.Const");
-			Object o = c.newInstance();
+//			Object o = c.newInstance();
 			Field f = c.getField(key);
-			data = (String) f.get(o);
-			if(data == null || data == ""){
+			data = (String) f.get(c);
+			if(data == null || data.equals("")){
 				SharedPreferences sp = context.getSharedPreferences("user" , Context.MODE_PRIVATE);
-				f.set(o, sp.getString(key, ""));
+				data = sp.getString(key, "");
+				f.set(c, data);
+				
 			}
-			
+			Log.d(key , key + ":" +data);
 			return data;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -50,10 +51,11 @@ public class DeviceUtil {
 		edit.putString(key, value).commit();
 		try {
 			Class<?> c = Class.forName("com.joker.livingstone.util.Const");
-			Object o = c.newInstance();
+//			Object o = c.newInstance();
 			Field f = c.getField(key);
-			f.set(o, value);
+			f.set(c, value);
 			
+			Log.d(key , value);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

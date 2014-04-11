@@ -54,7 +54,7 @@ public class WelcomeActivity extends BaseActivity {
         public void run() {  
             // TODO Auto-generated method stub  
             try {  
-                Thread.sleep(1);// 线程暂停时间，单位毫秒  
+                Thread.sleep(1000);// 线程暂停时间，单位毫秒  
                 mHandler.sendEmptyMessage(GOTO_MAIN_ACTIVITY);  
             } catch (InterruptedException e) {  
                 // TODO Auto-generated catch block  

@@ -47,7 +47,11 @@
             android:label="@string/app_name" />
         <activity
             android:name=".EasterActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:label="@string/app_name" />
+        <activity 
+            android:name=".addCommentActivity"
+            android:label="@string/comment_title" />
         <activity
             android:name=".SearchActivity"
             android:launchMode="singleTop" >
