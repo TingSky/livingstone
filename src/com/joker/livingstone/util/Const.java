@@ -6,4 +6,6 @@ public class Const {
 	public static String USERID;
 	public static String EGGID;
 	
+	
+	public final static int SEND_COMMENT_ID = 1000;
 }
