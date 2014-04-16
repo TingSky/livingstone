@@ -6,17 +6,17 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -211,6 +211,16 @@ public class EasterActivity extends BaseActivity{
 		@Override
 		public void onClick(View v) {
 			if(v.getTag().equals("reg")){
+				if(regForm.getVisibility() !=  View.VISIBLE){
+					mTextView.setVisibility(View.GONE);
+					regForm.setVisibility(View.VISIBLE);
+					phoneView.requestFocus();
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+					
+					return;
+				}
+				
 				if(!checkInput()) return ;
 				else{
 					map = new HashMap<String, String>();
@@ -411,5 +421,5 @@ public class EasterActivity extends BaseActivity{
 	    return super.onOptionsItemSelected(item);
 	}
 	
-
+	
 }

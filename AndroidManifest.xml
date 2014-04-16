@@ -47,7 +47,7 @@
             android:label="@string/app_name" />
         <activity
             android:name=".EasterActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:label="@string/app_name" />
         <activity 
             android:name=".addCommentActivity"
