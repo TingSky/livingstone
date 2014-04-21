@@ -14,11 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,8 +45,8 @@ public class EasterActivity extends BaseActivity{
     private View content;
     private TextView mTextView;
     private View regForm;
-    private Button reg;
-    private Button hangout;
+//    private Button reg;
+//    private Button hangout;
     private EditText phoneView;
     private EditText passwordView;
     private EditText nicknameView;
@@ -54,6 +54,8 @@ public class EasterActivity extends BaseActivity{
     private String phone;
     private String password;
     private String nickname;
+    
+    private MenuItem reg;
     
     private Map<String, String> map;
 
@@ -66,7 +68,7 @@ public class EasterActivity extends BaseActivity{
 
 		initDrawerAndActionBar("感谢神！");
         getRank();
-        setListener();
+//        setListener();
 
 	}
 	private void findView() {
@@ -75,8 +77,8 @@ public class EasterActivity extends BaseActivity{
 		
 		mTextView = (TextView)findViewById(R.id.text);
 		regForm = findViewById(R.id.reg_area);
-		reg = (Button)findViewById(R.id.reg);
-		hangout = (Button)findViewById(R.id.hangout);
+//		reg = (Button)findViewById(R.id.reg);
+//		hangout = (Button)findViewById(R.id.hangout);
 		phoneView = (EditText)findViewById(R.id.phone);
 		passwordView = (EditText)findViewById(R.id.password);
 		nicknameView = (EditText)findViewById(R.id.nickname);
@@ -153,7 +155,7 @@ public class EasterActivity extends BaseActivity{
 		String userid = DeviceUtil.get(EasterActivity.this , "USERID");
 		if(!userid.equals("")){
 			regForm.setVisibility(View.GONE);
-			reg.setVisibility(View.GONE);
+			reg.setVisible(false);
 		}
 	}
 	
@@ -199,44 +201,44 @@ public class EasterActivity extends BaseActivity{
 
 	}
 	
-	private void setListener(){
-		ButtonListener l = new ButtonListener();
-		reg.setOnClickListener(l);
-		hangout.setOnClickListener(l);
-				
-	}
+//	private void setListener(){
+//		ButtonListener l = new ButtonListener();
+//		reg.setOnClickListener(l);
+//		hangout.setOnClickListener(l);
+//				
+//	}
 	
-	class ButtonListener implements OnClickListener{
-
-		@Override
-		public void onClick(View v) {
-			if(v.getTag().equals("reg")){
-				if(regForm.getVisibility() !=  View.VISIBLE){
-					mTextView.setVisibility(View.GONE);
-					regForm.setVisibility(View.VISIBLE);
-					phoneView.requestFocus();
-					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-					
-					return;
-				}
-				
-				if(!checkInput()) return ;
-				else{
-					map = new HashMap<String, String>();
-					map.put("mobileNo", phone);
-					map.put("password", password);
-					map.put("userName", nickname);
-					
-					String url = Const.PATH + "mobileRegister";
-					new regTask().execute(url);
-				}
-			}else{
-				EasterActivity.this.finish();
-			}
-		}
-		
-	}
+//	class ButtonListener implements OnClickListener{
+//
+//		@Override
+//		public void onClick(View v) {
+//			if(v.getTag().equals("reg")){
+//				if(regForm.getVisibility() !=  View.VISIBLE){
+//					mTextView.setVisibility(View.GONE);
+//					regForm.setVisibility(View.VISIBLE);
+//					phoneView.requestFocus();
+//					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//					
+//					return;
+//				}
+//				
+//				if(!checkInput()) return ;
+//				else{
+//					map = new HashMap<String, String>();
+//					map.put("mobileNo", phone);
+//					map.put("password", password);
+//					map.put("userName", nickname);
+//					
+//					String url = Const.PATH + "mobileRegister";
+//					new regTask().execute(url);
+//				}
+//			}else{
+//				EasterActivity.this.finish();
+//			}
+//		}
+//		
+//	}
 	
 	private boolean checkInput() {
 		phone = phoneView.getText().toString().trim();
@@ -360,32 +362,39 @@ public class EasterActivity extends BaseActivity{
 
 
 
-	//	class ItemClickListener implements OnItemClickListener {
-//
-//		@Override
-//		public void onItemClick(AdapterView<?> parent, View view, int position,
-//				long id) {
-////			TextView t = (TextView)view.findViewById(R.id.bookName);
-////			Toast.makeText(ChapterActivity.this, position + "", Toast.LENGTH_LONG).show();
-//			
-//			Cursor c = (Cursor)parent.getItemAtPosition(position);
-//			Intent i = new Intent(EasterActivity.this , SectionActivity.class);
-//			i.putExtra("chapterNo", c.getInt(1));
-//			i.putExtra("bookName", bookName);
-//			i.putExtra("bookId", bookId);
-//			Log.d("123", c.getString(1) + bookName + bookId);
-////			i.putExtra("chapterNo", c.getString(c.getColumnIndex("chapterNo")));
-//			EasterActivity.this.startActivity(i);
-////			dialog = ProgressDialog.show(ChapterActivity.this , "活石" ,"正在加载...");
-//			DialogHelper.showDialog(EasterActivity.this);
-//		}
-//
-//	}
-//	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.index, menu);
+//		 Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.easter, menu);
+		reg = menu.findItem(R.id.action_reg);
+		reg.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				if(regForm.getVisibility() !=  View.VISIBLE){
+					mTextView.setVisibility(View.GONE);
+					regForm.setVisibility(View.VISIBLE);
+					phoneView.requestFocus();
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+					reg.setTitle("确定");
+					
+					return false;
+				}
+				
+				if(!checkInput()) return false;
+				else{
+					map = new HashMap<String, String>();
+					map.put("mobileNo", phone);
+					map.put("password", password);
+					map.put("userName", nickname);
+					
+					String url = Const.PATH + "mobileRegister";
+					new regTask().execute(url);
+				}
+				return false;
+			}
+		});
 		
 //		SearchManager searchManager =
 //		        (SearchManager) IndexActivity.this.getSystemService(Context.SEARCH_SERVICE);

@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -81,10 +83,15 @@ public class DiscussActivity extends BaseActivity {
 	}
 
 	private void getDataFromIntent() {
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(Const.SEND_COMMENT_SUCCESS_ID);
+		
 		Intent i = getIntent();
 		bookId = i.getIntExtra("bookId", 1);
 		bookName = i.getStringExtra("bookName");
 		chapterNo = i.getIntExtra("chapterNo", 1);
+		
+		Log.d("123",bookName + bookId + "|" +chapterNo);
 
 	}
 
@@ -374,6 +381,7 @@ Log.d(vote.isVoted + "",vote.agree+"");
 				Intent i = new Intent(DiscussActivity.this , AddCommentActivity.class);
 				i.putExtra("bookId", bookId);
 				i.putExtra("chapterNo", chapterNo);
+				i.putExtra("bookName", bookName);
 				startActivity(i);
 				return true;
 			}

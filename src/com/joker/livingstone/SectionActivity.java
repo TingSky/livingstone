@@ -32,6 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DeviceUtil;
@@ -435,10 +436,15 @@ public class SectionActivity extends BaseActivity {
 
 			if(hint.getVisibility() == View.VISIBLE){
 				hint.setVisibility(View.INVISIBLE);
+				
 			}else{
 				Cursor c = (Cursor) parent.getItemAtPosition(position);
 				String note = c.getString(c.getColumnIndex("noteText"));
-				if(note.equals("")) return ;
+				if(note.equals("")) {
+					note = "ÔÝÎÞ×¢ÊÍ¡£";
+//					Toast.makeText(SectionActivity.this, "ÔÝÎÞ×¢ÊÍ", Toast.LENGTH_LONG).show();
+//					return ;
+				}
 				hint.setText(note);
 				
 //			hint.setText(c.getString(c.getColumnIndex("sectionText ")));

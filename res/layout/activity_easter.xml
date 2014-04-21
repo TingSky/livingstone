@@ -10,7 +10,9 @@
         android:id="@+id/content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal" >
         
         <TextView 
@@ -36,12 +38,11 @@
 	            android:id="@+id/text1"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:minWidth="80dp"
+	            android:minWidth="70dp"
 	            android:layout_alignParentTop="true"
-	            android:text="手机号码："
-	            android:layout_gravity="left"
+	            android:text="手机号："
+	            android:gravity="right"
 	            android:layout_marginTop="16dp"
-	            android:layout_marginLeft="16dp"
 	            android:layout_marginBottom="16dp"
 	            android:textSize="16sp"
 	            />
@@ -50,8 +51,7 @@
 	            android:id="@+id/phone"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_marginRight="16dp"
-	            android:hint="请填写您的手机号码"
+	            android:hint="请填写您的手机号"
 	            android:layout_toRightOf="@id/text1"
 	            android:layout_gravity="right"
 	            android:layout_alignBaseline="@id/text1"
@@ -62,12 +62,11 @@
 	            android:id="@+id/text2"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:minWidth="80dp"
+	            android:minWidth="70dp"
 	            android:layout_below="@id/text1"
-	            android:text="密码："
-	            android:layout_gravity="left"
+	            android:text="密    码："
+	            android:gravity="right"
 	            android:layout_marginTop="16dp"
-	            android:layout_marginLeft="16dp"
 	            android:layout_marginBottom="16dp"
 	            android:textSize="16sp"
 	            />
@@ -76,7 +75,6 @@
 	            android:id="@+id/password"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_marginRight="16dp"
 	            android:hint="请填写您的密码"
 	            android:layout_toRightOf="@id/text2"
 	            android:layout_gravity="right"
@@ -87,12 +85,11 @@
 	            android:id="@+id/text3"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:minWidth="80dp"
+	            android:minWidth="70dp"
 	            android:layout_below="@id/text2"
-	            android:text="昵称："
-	            android:layout_gravity="left"
+	            android:text="昵    称："
+	            android:gravity="right"
 	            android:layout_marginTop="16dp"
-	            android:layout_marginLeft="16dp"
 	            android:layout_marginBottom="16dp"
 	            android:textSize="16sp"
 	            />
@@ -101,7 +98,6 @@
 	            android:id="@+id/nickname"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_marginRight="16dp"
 	            android:hint="请填写您的昵称"
 	            android:layout_toRightOf="@id/text3"
 	            android:layout_gravity="right"
@@ -113,36 +109,36 @@
             
             
 
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:minHeight="48.0dip"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" >
+<!--         <LinearLayout -->
+<!--             android:id="@+id/buttons" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_alignParentBottom="true" -->
+<!--             android:gravity="center" -->
+<!--             android:minHeight="48.0dip" -->
+<!--             android:orientation="horizontal" -->
+<!--             android:paddingLeft="@dimen/activity_horizontal_margin" -->
+<!--             android:paddingRight="@dimen/activity_horizontal_margin" > -->
 	            
-	        <Button 
-	            android:id="@+id/hangout"
-	            android:tag="hangout"
-	            android:layout_width="0dp"
-	        	android:layout_height="wrap_content"
-	        	android:gravity="center"  
-	        	android:layout_weight="1"
-	        	android:text="@string/easter_hangout"/>
+<!-- 	        <Button  -->
+<!-- 	            android:id="@+id/hangout" -->
+<!-- 	            android:tag="hangout" -->
+<!-- 	            android:layout_width="0dp" -->
+<!-- 	        	android:layout_height="wrap_content" -->
+<!-- 	        	android:gravity="center"   -->
+<!-- 	        	android:layout_weight="1" -->
+<!-- 	        	android:text="@string/easter_hangout"/> -->
 
-	        <Button
-	            android:id="@+id/reg"
-	            android:tag="reg"
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:gravity="center"  
-	            android:layout_weight="1"
-	            android:text="@string/easter_reg" />
+<!-- 	        <Button -->
+<!-- 	            android:id="@+id/reg" -->
+<!-- 	            android:tag="reg" -->
+<!-- 	            android:layout_width="0dp" -->
+<!-- 	            android:layout_height="wrap_content" -->
+<!-- 	            android:gravity="center"   -->
+<!-- 	            android:layout_weight="1" -->
+<!-- 	            android:text="@string/easter_reg" /> -->
 
-        </LinearLayout>
+<!--         </LinearLayout> -->
     </RelativeLayout>
 
     <!-- The navigation drawer -->

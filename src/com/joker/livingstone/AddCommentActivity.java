@@ -34,6 +34,7 @@ public class AddCommentActivity extends BaseActivity{
     private EditText mEditText;
     private int bookId;
     private String bookName;
+    private int chapterNo;
     
 
 	@Override
@@ -55,6 +56,7 @@ public class AddCommentActivity extends BaseActivity{
 		Intent i = getIntent();
 		bookId = i.getIntExtra("bookId", 1);
 		bookName = i.getStringExtra("bookName");
+		chapterNo = i.getIntExtra("chapterNo" , 1);
 	}
 	
 	/**
@@ -90,10 +92,13 @@ public class AddCommentActivity extends BaseActivity{
 	}
 	
 	private void send() {
-		Intent i = getIntent();
+		Intent i = new Intent(this, SendCommentService.class);
+		i.putExtra("bookId", bookId);
+		i.putExtra("chapterNo", chapterNo);
+		i.putExtra("bookName", bookName);
 		i.putExtra("content", mEditText.getText().toString());
-		i.setClass(this, SendCommentService.class);
 		startService(i);
+		finish();
 		
 //		Log.d("123","asdfa");
 //		NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(this);

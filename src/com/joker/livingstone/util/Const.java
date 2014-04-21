@@ -8,4 +8,5 @@ public class Const {
 	
 	
 	public final static int SEND_COMMENT_ID = 1000;
+	public final static int SEND_COMMENT_SUCCESS_ID = 1001;
 }
