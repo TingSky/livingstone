@@ -32,20 +32,13 @@ import com.joker.livingstone.util.HttpHelper;
 
 public class EasterActivity extends BaseActivity{
 	
-	private ActionBarDrawerToggle drawerToggle;
-	private DrawerLayout drawerLayout;
-	
-	private String[] menuList;
-    private ListView drawerList;
-    
-    private ActionBar bar;
     
     private int userid;
     
     private View content;
     private TextView mTextView;
     private View regForm;
-//    private Button reg;
+    private MenuItem  reg;
 //    private Button hangout;
     private EditText phoneView;
     private EditText passwordView;
@@ -55,7 +48,8 @@ public class EasterActivity extends BaseActivity{
     private String password;
     private String nickname;
     
-    private MenuItem reg;
+    //配置从本地获取
+    private boolean local = false;
     
     private Map<String, String> map;
 
@@ -65,10 +59,9 @@ public class EasterActivity extends BaseActivity{
 		setContentView(R.layout.activity_easter);
 		
 		findView();
-
-		initDrawerAndActionBar("感谢神！");
+		setTitle("感谢神！");
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getRank();
-//        setListener();
 
 	}
 	private void findView() {
@@ -77,8 +70,6 @@ public class EasterActivity extends BaseActivity{
 		
 		mTextView = (TextView)findViewById(R.id.text);
 		regForm = findViewById(R.id.reg_area);
-//		reg = (Button)findViewById(R.id.reg);
-//		hangout = (Button)findViewById(R.id.hangout);
 		phoneView = (EditText)findViewById(R.id.phone);
 		passwordView = (EditText)findViewById(R.id.password);
 		nicknameView = (EditText)findViewById(R.id.nickname);
@@ -88,48 +79,6 @@ public class EasterActivity extends BaseActivity{
 	
 	
 	
-//	private void getDataFromIntent(){
-//		Intent i = getIntent();
-//		bookId = i.getIntExtra("bookId", 1);
-//		bookName = i.getStringExtra("bookName");
-//	}
-	
-	/**
-	 * 初始化Drawer和ActionBar
-	 */
-	private void initDrawerAndActionBar(final String title) {
-		menuList = getResources().getStringArray(R.array.menu);
-		setTitle(title);
-		
-		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-		drawerList = (ListView) findViewById(R.id.left_drawer);
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
-		
-		bar = getSupportActionBar();
-		drawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
-            public void onDrawerClosed(View view) {
-            	bar.setTitle(title);
-            	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-            	bar.setTitle(R.string.drawer_open);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        drawerLayout.setDrawerListener(drawerToggle);
-
-        bar.setDisplayHomeAsUpEnabled(true);
-        bar.setHomeButtonEnabled(true);
-
-	}
-	
 	
 	private void getRank() {
 		//如果本地存放了彩蛋编号就不从服务器拿数据
@@ -137,6 +86,7 @@ public class EasterActivity extends BaseActivity{
 		if(eggid == null ||eggid.equals("")){
 			getRankFromServer();
 		}else{
+			local = true;
 			displayRank(eggid);
 		}
 		
@@ -151,12 +101,12 @@ public class EasterActivity extends BaseActivity{
 		String s = getResources().getString(R.string.reg_tag);
 		mTextView.setText(s.format(s, rank));
 		
-		//已经注册过
 		String userid = DeviceUtil.get(EasterActivity.this , "USERID");
 		if(!userid.equals("")){
 			regForm.setVisibility(View.GONE);
-			reg.setVisible(false);
+			if(!local) reg.setVisible(false);
 		}
+		
 	}
 	
 	private void getRankFromServer() {
@@ -201,44 +151,7 @@ public class EasterActivity extends BaseActivity{
 
 	}
 	
-//	private void setListener(){
-//		ButtonListener l = new ButtonListener();
-//		reg.setOnClickListener(l);
-//		hangout.setOnClickListener(l);
-//				
-//	}
 	
-//	class ButtonListener implements OnClickListener{
-//
-//		@Override
-//		public void onClick(View v) {
-//			if(v.getTag().equals("reg")){
-//				if(regForm.getVisibility() !=  View.VISIBLE){
-//					mTextView.setVisibility(View.GONE);
-//					regForm.setVisibility(View.VISIBLE);
-//					phoneView.requestFocus();
-//					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-//					
-//					return;
-//				}
-//				
-//				if(!checkInput()) return ;
-//				else{
-//					map = new HashMap<String, String>();
-//					map.put("mobileNo", phone);
-//					map.put("password", password);
-//					map.put("userName", nickname);
-//					
-//					String url = Const.PATH + "mobileRegister";
-//					new regTask().execute(url);
-//				}
-//			}else{
-//				EasterActivity.this.finish();
-//			}
-//		}
-//		
-//	}
 	
 	private boolean checkInput() {
 		phone = phoneView.getText().toString().trim();
@@ -327,46 +240,15 @@ public class EasterActivity extends BaseActivity{
 		}
 	}
 	
-//	class CursorAdapter extends SimpleCursorAdapter{
-//		
-//		private LayoutInflater inflater;
-//
-//		public CursorAdapter(Context context, int layout, Cursor c,
-//				String[] from, int[] to, int flags) {
-//			super(context, layout, c, from, to, flags);
-//			inflater = (LayoutInflater)context.getSystemService("layout_inflater");
-//		}
-//
-//		@Override
-//		public View getView(int position, View convertView, ViewGroup parent) {
-//			if (!this.mDataValid) {
-//	            throw new IllegalStateException("this should only be called when the cursor is valid");
-//	        }
-//	        if (!this.mCursor.moveToPosition(position)) {
-//	            throw new IllegalStateException("couldn't move cursor to position " + position);
-//	        }
-//	        View v;
-//	        
-//	        if(position < 39){
-//	        	v = inflater.inflate(R.layout.directory, parent, false);
-//	        }else{
-//	        	v = inflater.inflate(R.layout.directory1, parent, false);
-//	        }
-//	        bindView(v, this.mContext, this.mCursor);
-//	        return v;
-//			
-//		}
-//
-//	}
-//	
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		//配置从本地获取则不出现注册按钮
+		if(local) return false;
 //		 Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.easter, menu);
 		reg = menu.findItem(R.id.action_reg);
+		
 		reg.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
@@ -396,38 +278,8 @@ public class EasterActivity extends BaseActivity{
 			}
 		});
 		
-//		SearchManager searchManager =
-//		        (SearchManager) IndexActivity.this.getSystemService(Context.SEARCH_SERVICE);
-//		SupportMenuItem searchMenuItem = ((SupportMenuItem) menu.findItem(R.id.action_serach));
-//		SearchView searchView = (SearchView) searchMenuItem.getActionView();
-//		searchView.setSearchableInfo(searchManager.getSearchableInfo(IndexActivity.this.getComponentName()));
 		
-		
-		
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-	    super.onPostCreate(savedInstanceState);
-	    //有了这句，actionbar标题栏图标才会出现汉堡（本来是箭头）
-	    drawerToggle.syncState();
-	}
-	 
-//	@Override
-//	public void onConfigurationChanged(Configuration newConfig) {
-//	    super.onConfigurationChanged(newConfig);
-//	    drawerToggle.onConfigurationChanged(newConfig);
-//	}
-//	 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		//有了这句，点击顶部汉堡才能出现drawer
-	    if (drawerToggle.onOptionsItemSelected(item)) {
-	    	return true;
-	    }
-	 
-	    return super.onOptionsItemSelected(item);
+		return true;
 	}
 	
 	

@@ -40,20 +40,12 @@ import com.joker.livingstone.util.HttpHelper;
 
 public class DiscussActivity extends BaseActivity {
 
-	private ActionBarDrawerToggle drawerToggle;
-	private DrawerLayout drawerLayout;
-
-	private String[] menuList;
-	private ListView drawerList;
-
-	private ActionBar bar;
 
 	private int bookId;
 	private String bookName;
 	private int chapterNo;
 	private ListView mListView;
 
-	private String query;
 	private ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter adapter;
 	
@@ -71,14 +63,11 @@ public class DiscussActivity extends BaseActivity {
 
 		mListView = (ListView) findViewById(R.id.listView);
 		// mListView.setDivider(null);
-
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getDataFromIntent();
-		initDrawerAndActionBar(bookName + " · " + chapterNo + " · 讨论");
-		loadPageData();
+		setTitle(bookName + " · " + chapterNo + " · 讨论");
+		loadPageData(++currentPage);
 
-		// SearchRecentSuggestions suggestions=new SearchRecentSuggestions(this,
-		// SearchProvider.AUTHORITY, SearchProvider.MODE);
-		// suggestions.saveRecentQuery(query, null);
 
 	}
 
@@ -95,71 +84,19 @@ public class DiscussActivity extends BaseActivity {
 
 	}
 
-	/**
-	 * 初始化Drawer和ActionBar
-	 */
-	private void initDrawerAndActionBar(final String title) {
-		menuList = getResources().getStringArray(R.array.menu);
-		setTitle(title);
-
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerList = (ListView) findViewById(R.id.left_drawer);
-		drawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, menuList));
-
-		bar = getSupportActionBar();
-		drawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-		drawerLayout, /* DrawerLayout object */
-		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-		R.string.drawer_open, /* "open drawer" description for accessibility */
-		R.string.drawer_close /* "close drawer" description for accessibility */
-		) {
-			public void onDrawerClosed(View view) {
-				bar.setTitle(title);
-				supportInvalidateOptionsMenu(); // creates call to
-												// onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				bar.setTitle(R.string.drawer_open);
-				supportInvalidateOptionsMenu(); // creates call to
-												// onPrepareOptionsMenu()
-			}
-		};
-		drawerLayout.setDrawerListener(drawerToggle);
-
-		bar.setDisplayHomeAsUpEnabled(true);
-		bar.setHomeButtonEnabled(true);
-
-	}
 	
 	//第一次加载页面
-	private void loadPageData() {
+	private void loadPageData(int pageNo) {
 		Map<String , String> postData = new HashMap<String, String>();
 		postData.put("bookId", bookId +"");
 		postData.put("chapterNo", chapterNo +"");
-		postData.put("pageNo", ++currentPage +"");
+		postData.put("pageNo", pageNo +"");
 		new PageTask().execute(postData);
 
-		// // SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-		// MyAdapter adapter = new MyAdapter(
-		// DiscussActivity.this,
-		// R.layout.search ,
-		// c,
-		// new String[] { "directory", "sectionText" },
-		// new int[] { R.id.directory , R.id.content },
-		// MyAdapter.NO_SELECTION);
-		// mListView.setAdapter(adapter);
-		// mListView.setOnItemClickListener(new ItemClickListener());
 
 	}
 
 	class PageTask extends AsyncTask<Map<String,String>, Void, String> {
-		@Override
-		protected void onPreExecute() {
-			DialogHelper.showDialog(DiscussActivity.this);
-			super.onPreExecute();
-		}
 
 		@Override
 		protected String doInBackground(Map<String,String>... postData) {
@@ -199,7 +136,6 @@ public class DiscussActivity extends BaseActivity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			DialogHelper.dismiss();
 			if(adapter == null){
 				adapter = new SimpleAdapter(DiscussActivity.this, dataList,
 						R.layout.discuss, 
@@ -316,13 +252,7 @@ Log.d(vote.isVoted + "",vote.agree+"");
 						Toast.makeText(DiscussActivity.this, "已经是最后一条评论了哦～", Toast.LENGTH_SHORT).show();
 						return ;
 					}
-					loadPageData();
-//					Map<String, String> postData = new HashMap<String, String>();
-//					postData.put("bookId", bookId+"");
-//					postData.put("chapterNo", chapterNo+"");
-////					postData.put("cid", cid+"");
-//					
-//					new PageTask().execute(postData);
+					loadPageData(++currentPage);
 					
 				}
 			}
@@ -337,36 +267,6 @@ Log.d(vote.isVoted + "",vote.agree+"");
 
 	}
 
-//	class ItemClickListener implements OnItemClickListener {
-//
-//		@Override
-//		public void onItemClick(AdapterView<?> parent, View view, int position,
-//				long id) {
-//			// TextView t = (TextView)view.findViewById(R.id.bookName);
-//			// Toast.makeText(IndexActivity.this, position + "",
-//			// Toast.LENGTH_LONG).show();
-//
-//			Cursor c = (Cursor) parent.getItemAtPosition(position);
-//			Intent i = new Intent(DiscussActivity.this, SectionActivity.class);
-//			i.putExtra("bookId", c.getInt(1));
-//			// i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
-//			i.putExtra("bookName", c.getString(2));
-//			// i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
-//			i.putExtra("chapterNo", c.getInt(3));
-//			// i.putExtra("chapterNo",
-//			// c.getString(c.getColumnIndex("chapterNo")));
-//			i.putExtra("sectionNo", c.getInt(4));
-//			// i.putExtra("sectionNo",
-//			// c.getString(c.getColumnIndex("sectionNo")));
-//			i.putExtra("query", query);
-//
-//			DiscussActivity.this.startActivity(i);
-//			// dialog = ProgressDialog.show(SearchActivity.this , "活石"
-//			// ,"正在加载...");
-//			DialogHelper.showDialog(DiscussActivity.this);
-//		}
-//
-//	}
 
 	
 	@Override
@@ -389,27 +289,5 @@ Log.d(vote.isVoted + "",vote.agree+"");
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// 有了这句，actionbar标题栏图标才会出现汉堡（本来是箭头）
-		drawerToggle.syncState();
-	}
-
-	// @Override
-	// public void onConfigurationChanged(Configuration newConfig) {
-	// super.onConfigurationChanged(newConfig);
-	// drawerToggle.onConfigurationChanged(newConfig);
-	// }
-	//
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// 有了这句，点击顶部汉堡才能出现drawer
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
 
 }

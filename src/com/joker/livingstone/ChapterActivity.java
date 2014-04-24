@@ -26,12 +26,6 @@ import com.joker.livingstone.util.DialogHelper;
 
 public class ChapterActivity extends BaseActivity{
 	
-	private ActionBarDrawerToggle drawerToggle;
-	private DrawerLayout drawerLayout;
-	
-	private String[] menuList;
-    private ListView drawerList;
-    
     private ActionBar bar;
     
     private GridView mGridView;
@@ -47,7 +41,9 @@ public class ChapterActivity extends BaseActivity{
 		
 		
 		getDataFromIntent();
-		initDrawerAndActionBar(bookName);
+		setTitle(bookName);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//		initDrawerAndActionBar(bookName);
 		loadChapterData();
         
         
@@ -63,38 +59,38 @@ public class ChapterActivity extends BaseActivity{
 	/**
 	 * 初始化Drawer和ActionBar
 	 */
-	private void initDrawerAndActionBar(final String title) {
-		menuList = getResources().getStringArray(R.array.menu);
-		setTitle(title);
-		
-		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-		drawerList = (ListView) findViewById(R.id.left_drawer);
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
-		
-		bar = getSupportActionBar();
-		drawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
-            public void onDrawerClosed(View view) {
-            	bar.setTitle(title);
-            	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-            	bar.setTitle(R.string.drawer_open);
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        drawerLayout.setDrawerListener(drawerToggle);
-
-        bar.setDisplayHomeAsUpEnabled(true);
-        bar.setHomeButtonEnabled(true);
-
-	}
+//	private void initDrawerAndActionBar(final String title) {
+//		menuList = getResources().getStringArray(R.array.menu);
+//		setTitle(title);
+//		
+//		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+//		drawerList = (ListView) findViewById(R.id.left_drawer);
+//		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
+//		
+//		bar = getSupportActionBar();
+//		drawerToggle = new ActionBarDrawerToggle(
+//                this,                  /* host Activity */
+//                drawerLayout,         /* DrawerLayout object */
+//                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+//                R.string.drawer_open,  /* "open drawer" description for accessibility */
+//                R.string.drawer_close  /* "close drawer" description for accessibility */
+//                ) {
+//            public void onDrawerClosed(View view) {
+//            	bar.setTitle(title);
+//            	supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//
+//            public void onDrawerOpened(View drawerView) {
+//            	bar.setTitle(R.string.drawer_open);
+//                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+//            }
+//        };
+//        drawerLayout.setDrawerListener(drawerToggle);
+//
+//        bar.setDisplayHomeAsUpEnabled(true);
+//        bar.setHomeButtonEnabled(true);
+//
+//	}
 	
 	
 	private void loadChapterData(){
@@ -188,28 +184,7 @@ public class ChapterActivity extends BaseActivity{
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-	    super.onPostCreate(savedInstanceState);
-	    //有了这句，actionbar标题栏图标才会出现汉堡（本来是箭头）
-	    drawerToggle.syncState();
-	}
 	 
-//	@Override
-//	public void onConfigurationChanged(Configuration newConfig) {
-//	    super.onConfigurationChanged(newConfig);
-//	    drawerToggle.onConfigurationChanged(newConfig);
-//	}
-//	 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		//有了这句，点击顶部汉堡才能出现drawer
-	    if (drawerToggle.onOptionsItemSelected(item)) {
-	    	return true;
-	    }
-	 
-	    return super.onOptionsItemSelected(item);
-	}
 	
 
 }
