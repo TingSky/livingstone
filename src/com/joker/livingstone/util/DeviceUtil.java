@@ -1,14 +1,17 @@
 package com.joker.livingstone.util;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class DeviceUtil {
 	public static void initParams(Context context){
+		createFile();
 		Const.IMEI = getImei(context);
 		Const.USERID = get(context , "USERID");
 		Const.EGGID = get(context, "EGGID");
@@ -46,7 +49,7 @@ public class DeviceUtil {
 				f.set(c, data);
 				
 			}
-			Log.d(key , key + ":" +data);
+//			Log.d(key , key + ":" +data);
 			return data;
 		} catch (Exception e) {
 			SharedPreferences sp = context.getSharedPreferences(nameFiled , Context.MODE_PRIVATE);
@@ -64,11 +67,17 @@ public class DeviceUtil {
 			Field f = c.getField(key);
 			f.set(c, value);
 			
-			Log.d(key , value);
+//			Log.d(key , value);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 //			e.printStackTrace();
 		}
+	}
+	
+	private static void createFile(){
+		File f = new File(Const.SDCARD_DATA_LOCATION);
+		if(f.isDirectory()) return ;
+		f.mkdirs();
 	}
 
 }
