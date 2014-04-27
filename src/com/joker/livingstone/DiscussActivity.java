@@ -46,6 +46,7 @@ public class DiscussActivity extends BaseActivity {
 	private String bookName;
 	private int chapterNo;
 	private ListView mListView;
+	private TextView hint;
 
 	private ArrayList<HashMap<String, Object>> dataList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter adapter;
@@ -63,6 +64,9 @@ public class DiscussActivity extends BaseActivity {
 		setContentView(R.layout.activity_search);
 
 		mListView = (ListView) findViewById(R.id.listView);
+		hint = (TextView) findViewById(R.id.hint);
+		hint.setText(R.string.comment_not_found);
+		hint.setVisibility(View.GONE);
 		// mListView.setDivider(null);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getDataFromIntent();
@@ -139,12 +143,11 @@ public class DiscussActivity extends BaseActivity {
 		protected void onPostExecute(String result) {
 			if(adapter == null){
 				if(dataList.size() == 0){
-					mListView.setVisibility(View.GONE);
-					TextView v = (TextView) findViewById(R.id.hint);
-					v.setText(R.string.comment_not_found);
-					v.setVisibility(View.VISIBLE);
+					hint.setVisibility(View.VISIBLE);
 					return ;
 				}
+				mListView.setVisibility(View.VISIBLE);
+				hint.setVisibility(View.GONE);
 				adapter = new SimpleAdapter(DiscussActivity.this, dataList,
 						R.layout.discuss, 
 						new String[] { "nickName", "addr","content", "createTime","agree" }, 
