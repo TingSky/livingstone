@@ -46,6 +46,7 @@ public class FeedbackActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.umeng_fb_activity_conversation);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		setTitle("·´(tu)À¡(cao)");
 		try {
 			agent = new FeedbackAgent(this);

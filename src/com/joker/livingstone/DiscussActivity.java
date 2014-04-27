@@ -31,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -137,6 +138,13 @@ public class DiscussActivity extends BaseActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			if(adapter == null){
+				if(dataList.size() == 0){
+					mListView.setVisibility(View.GONE);
+					TextView v = (TextView) findViewById(R.id.hint);
+					v.setText(R.string.comment_not_found);
+					v.setVisibility(View.VISIBLE);
+					return ;
+				}
 				adapter = new SimpleAdapter(DiscussActivity.this, dataList,
 						R.layout.discuss, 
 						new String[] { "nickName", "addr","content", "createTime","agree" }, 

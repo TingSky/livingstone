@@ -5,7 +5,8 @@ import java.lang.reflect.Field;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -32,7 +33,7 @@ public class DeviceUtil {
 	}
 	
 	public static void set(Context context , String key , String value){
-		set(context, "name", key, value);
+		set(context, "user", key, value);
 	}
 	
 	
@@ -49,11 +50,12 @@ public class DeviceUtil {
 				f.set(c, data);
 				
 			}
-//			Log.d(key , key + ":" +data);
+			Log.d("util" , nameFiled + "->" +key + ":" +data);
 			return data;
 		} catch (Exception e) {
 			SharedPreferences sp = context.getSharedPreferences(nameFiled , Context.MODE_PRIVATE);
 			data = sp.getString(key, "");
+			Log.d("util" , nameFiled + ":" +key + "->" +data);
 		}
 		return data;
 	}
@@ -67,7 +69,7 @@ public class DeviceUtil {
 			Field f = c.getField(key);
 			f.set(c, value);
 			
-//			Log.d(key , value);
+			Log.d("util" , nameFiled + ":" +key + "<-" +value);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -78,6 +80,19 @@ public class DeviceUtil {
 		File f = new File(Const.SDCARD_DATA_LOCATION);
 		if(f.isDirectory()) return ;
 		f.mkdirs();
+	}
+	/*
+	 * 判断是否有网络连接 
+	 */
+	public static boolean isNetworkConnected(Context context) { 
+		if (context != null) { 
+			ConnectivityManager mConnectivityManager = (ConnectivityManager) context .getSystemService(Context.CONNECTIVITY_SERVICE); 
+			NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo(); 
+			if (mNetworkInfo != null) { 
+				return mNetworkInfo.isAvailable(); 
+			} 
+		} 
+		return false; 
 	}
 
 }

@@ -9,7 +9,6 @@
     
      <string-array name="menu">
         <item>首页</item>
-        <item>个人中心</item>
         <item>反馈</item>
         <item>关于</item>
     </string-array>
@@ -29,6 +28,8 @@
     <string name="comment_title">写写你的感动</string>
     
     <string name="search_hint">请输入经文关键词</string>
+    <string name="search_not_found">咦？没有搜索结果？搜索『活石』试试</string>
+    <string name="comment_not_found">圣经的感动\n阅读的困惑\n经历的奇妙\n恩典的应许\n\n快来写写，记下你此时最真实的心情！</string>
     <string name="feedback_hint">我吐槽：</string>
     
     <string name="reg_tag">感谢神！你是第%s个发现活石秘密的人。完成注册，成为活石，被神拣选，建造圣洁灵宫！</string>

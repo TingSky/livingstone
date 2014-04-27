@@ -56,16 +56,17 @@ public class DownloadService extends Service {
 				JSONObject json;
 				try {
 					json = new JSONObject(data);
-Log.d("down" , "8");
+//Log.d("down" , "8");
 					if (json.getString("revealDate").compareTo(date) > 0) {
-Log.d("down" , "9");
-						DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "mode", json.getInt("mode") + "");
+//Log.d("down" , "9");
+						DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "mode", json.getString("mode") );
 				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "title", json.getString("title"));
 				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "source", json.getString("source"));
 				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "image", json.getString("image"));
 				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "revealDate", json.getString("revealDate"));
-				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "exceed", json.getInt("exceed") + "");
-				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "default", json.getInt("default") + "");
+				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "exceed", json.getString("exceed") );
+				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "default", json.getString("default"));
+				    	DeviceUtil.set(DownloadService.this, Const.WELCOME_UPGRADE_CONFIG, "bgcolor", json.getString("bgcolor"));
 				    	
 				    	String path = json.getString("image");
 				    	String name = path.substring(path.lastIndexOf(File.separator) + 1);
@@ -81,7 +82,8 @@ Log.d("down" , "9");
 			            fos.flush();
 			            fos.close();
 			            in.close();
-			            Log.d("down", "down");
+//Log.d("down", "down");
+			            DownloadService.this.stopSelf();
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();

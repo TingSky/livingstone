@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import com.umeng.analytics.MobclickAgent;
 
 public abstract class BaseActivity extends ActionBarActivity {
-//	protected TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
 
 	@Override
 	public void onResume() {

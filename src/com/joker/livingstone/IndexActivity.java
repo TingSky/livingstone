@@ -24,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.joker.livingstone.util.DBHelper;
 import com.umeng.analytics.MobclickAgent;
@@ -76,8 +77,10 @@ public class IndexActivity extends BaseActivity{
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				drawerLayout.closeDrawers();
-			    if(position == 2){
+			    if(position == 1){
 			    	startActivity(new Intent(IndexActivity.this , FeedbackActivity.class));
+			    }else if(position == 2){
+			    	Toast.makeText(IndexActivity.this, "『关于』页面暂未开放，敬请期待...", Toast.LENGTH_LONG).show();
 			    }
 			}
 		});
@@ -231,12 +234,6 @@ public class IndexActivity extends BaseActivity{
 
 		@Override
 		public boolean onQueryTextChange(String paramString) {
-//			if(TextUtils.isEmpty(paramString)){
-//				mGridView.clearTextFilter();
-//	        }else{
-//	        	mGridView.setFilterText(paramString);
-//	        }
-//			mGridView.setFilterText(paramString);
 			return true;
 		}
 		
@@ -249,12 +246,6 @@ public class IndexActivity extends BaseActivity{
 	    drawerToggle.syncState();
 	}
 	 
-//	@Override
-//	public void onConfigurationChanged(Configuration newConfig) {
-//	    super.onConfigurationChanged(newConfig);
-//	    drawerToggle.onConfigurationChanged(newConfig);
-//	}
-//	 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		//有了这句，点击顶部汉堡才能出现drawer
@@ -264,21 +255,6 @@ public class IndexActivity extends BaseActivity{
 	    return super.onOptionsItemSelected(item);
 	}
 
-
-	//当点击搜索时
-//	@Override
-//	public boolean onSearchRequested() {
-//		String text = search.getQuery().toString();
-//		Bundle bundle=new Bundle();  
-//        bundle.putString("data", text);
-//        startSearch("呵呵", false, bundle, false);
-//        Intent i = new Intent(this, SearchActivity.class);
-//        
-//        
-//        
-//		Toast.makeText(IndexActivity.this, text, Toast.LENGTH_LONG).show();
-//		return true;
-//	}
 	
 
 }

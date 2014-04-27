@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DeviceUtil;
 import com.joker.livingstone.util.DialogHelper;
 import com.joker.livingstone.util.HttpHelper;
 import com.joker.livingstone.util.SearchProvider;
@@ -51,7 +52,6 @@ import com.umeng.analytics.MobclickAgent;
 public class SearchActivity extends BaseActivity{
 	
     
-    private ActionBar bar;
     
     private ListView mListView;
     private MenuItem searchMenuItem;
@@ -96,21 +96,10 @@ public class SearchActivity extends BaseActivity{
 	private void getDataFromIntent() {
 		Intent i = getIntent();
 		
-	
-		
-//		Toast.makeText(this, i.getAction(), Toast.LENGTH_LONG).show();
-		
-		
 		
 		query = i.getStringExtra(SearchManager.QUERY);
-		if(query.equals("活石")){
+		if(query.equals("活石") && DeviceUtil.isNetworkConnected(this)){
 			startActivity(new Intent(this, EasterActivity.class));
-//			TelephonyManager tm = (TelephonyManager) this.getSystemService(TELEPHONY_SERVICE);
-//			String imei = tm.getDeviceId();
-//			String url = Const.PATH + "regEaster?imei=" + imei;
-			
-//			String no = HttpHelper.getString(url);
-//			Log.d("url" , url);
 			
 		}
 		
@@ -138,6 +127,14 @@ public class SearchActivity extends BaseActivity{
 				+ "where sectionText like ? and title=0 order by sectionIndex ";
 		Log.d("123", sql);
 		Cursor c = DBHelper.get().rawQuery(sql, new String[]{"%" + query + "%"});
+		if(c.getCount() == 0){
+			mListView.setVisibility(View.GONE);
+			findViewById(R.id.hint).setVisibility(View.VISIBLE);
+			return ;
+		}else{
+			mListView.setVisibility(View.VISIBLE);
+			findViewById(R.id.hint).setVisibility(View.GONE);
+		}
 
 		// SimpleCursorAdapter adapter = new SimpleCursorAdapter(
 		MyAdapter adapter = new MyAdapter(

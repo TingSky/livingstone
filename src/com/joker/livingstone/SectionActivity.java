@@ -90,43 +90,6 @@ public class SectionActivity extends BaseActivity {
 		return bookName + " · " + chapterNo;
 		
 	}
-	/**
-	 * 初始化Drawer和ActionBar
-	 */
-//	private void initDrawerAndActionBar() {
-//		menuList = getResources().getStringArray(R.array.menu);
-//		setTitle(initTitle());
-//
-//		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//		drawerList = (ListView) findViewById(R.id.left_drawer);
-//		drawerList.setAdapter(new ArrayAdapter<String>(this,
-//				R.layout.drawer_list_item, menuList));
-//
-//		bar = getSupportActionBar();
-//		drawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-//		drawerLayout, /* DrawerLayout object */
-//		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-//		R.string.drawer_open, /* "open drawer" description for accessibility */
-//		R.string.drawer_close /* "close drawer" description for accessibility */
-//		) {
-//			public void onDrawerClosed(View view) {
-//				setTitle(initTitle());
-//				supportInvalidateOptionsMenu(); // creates call to
-//												// onPrepareOptionsMenu()
-//			}
-//
-//			public void onDrawerOpened(View drawerView) {
-//				setTitle(R.string.drawer_open);
-//				supportInvalidateOptionsMenu(); // creates call to
-//												// onPrepareOptionsMenu()
-//			}
-//		};
-//		drawerLayout.setDrawerListener(drawerToggle);
-//
-//		bar.setDisplayHomeAsUpEnabled(true);
-//		bar.setHomeButtonEnabled(true);
-//
-//	}
 
 	private void loadSectionData() {
 		String sql = "SELECT seqId as _id , chapterNo from chapter "
@@ -230,42 +193,12 @@ public class SectionActivity extends BaseActivity {
 					((ViewPager) container).addView(mListViews.get(position), 0);
 				}
 				else {
-					// 很难理解新添加进来的view会自动绑定一个父类，由于一个儿子view不能与两个父类相关，所以得解绑
-					// 不这样做否则会产生 viewpager java.lang.IllegalStateException: The
-					// specified child already has a parent. You must call
-					// removeView() on the child's parent first.
-					// 还有一种方法是viewPager.setOffscreenPageLimit(3); 这种方法不用判断parent
-					// 是不是已经存在，但多余的listview不能被destroy
-
-//					((ViewGroup) mListViews.get(position -1).getParent())
-//							.removeView(mListViews.get(position -1));
-//					((ViewPager) container)
-//							.addView(mListViews.get(position -1), position - 1);
-//					if(mListViews.get(position -1) == null)
-					Log.e("tag",position+"");
-//					if(position == 0){
-//						initListView(container, position);
-//						initListView(container, position + 1);
-//					}else if(position == mListViews.size()){
-//						initListView(container, position - 1);
-//						initListView(container, position);
-//					}else{
-//						initListView(container, position - 1);
 					
 					((ViewGroup) v.getParent()).removeView(v);
 					v = loadPage(position + 1, (ListView)v);
 					mListViews.set(position, v);
 					((ViewPager) container).addView(mListViews.get(position), 0);
 					
-//					((ViewGroup) mListViews.get(position).getParent())
-//							.removeView(mListViews.get(position));
-//					((ViewPager) container)
-//							.addView(mListViews.get(position), position);
-//					
-//					((ViewGroup) mListViews.get(position).getParent())
-//							.removeView(mListViews.get(position));
-//					((ViewPager) container)
-//							.addView(mListViews.get(position), position +1);
 
 				}
 			} catch (Exception e) {

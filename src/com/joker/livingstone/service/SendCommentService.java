@@ -57,6 +57,7 @@ public class SendCommentService extends Service {
 				}
 			}
 		}).start();
+		SendCommentService.this.stopSelf();
 		return super.onStartCommand(intent, flags, startId);
 	}
 	

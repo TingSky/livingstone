@@ -28,6 +28,7 @@ import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DeviceUtil;
 import com.joker.livingstone.util.DialogHelper;
 import com.joker.livingstone.util.HttpHelper;
+import com.umeng.analytics.MobclickAgent;
 
 
 public class EasterActivity extends BaseActivity{
@@ -84,8 +85,10 @@ public class EasterActivity extends BaseActivity{
 		//如果本地存放了彩蛋编号就不从服务器拿数据
 		String eggid = DeviceUtil.get(this,"EGGID");
 		if(eggid == null ||eggid.equals("")){
+			MobclickAgent.onEvent(this, "发现彩蛋");
 			getRankFromServer();
 		}else{
+			MobclickAgent.onEvent(this, "重进彩蛋");
 			local = true;
 			displayRank(eggid);
 		}
@@ -102,7 +105,9 @@ public class EasterActivity extends BaseActivity{
 		mTextView.setText(s.format(s, rank));
 		
 		String userid = DeviceUtil.get(EasterActivity.this , "USERID");
-		if(!userid.equals("")){
+		if(userid.equals("")){
+			local = false;
+		}else{
 			regForm.setVisibility(View.GONE);
 			if(!local) reg.setVisible(false);
 		}
@@ -220,10 +225,12 @@ public class EasterActivity extends BaseActivity{
 		protected void onPostExecute(String result) {
 			DialogHelper.dismiss();
 			if(result.equals("OK")){
+				MobclickAgent.onEvent(EasterActivity.this, "注册成功");
 				DialogHelper.showFinishDialog(EasterActivity.this, "注册成功！");
 			}else if(result.equals("ERR")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "出错了，请与我们联系，谢谢");
 			}else if(result.equals("10")){
+				MobclickAgent.onEvent(EasterActivity.this, "imei为空");
 				DialogHelper.showFinishDialog(EasterActivity.this, "imei为空");	
 			}else if(result.equals("11")){
 				DialogHelper.showFinishDialog(EasterActivity.this, "手机号码为空" , false);	
@@ -254,6 +261,7 @@ public class EasterActivity extends BaseActivity{
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				if(regForm.getVisibility() !=  View.VISIBLE){
+					MobclickAgent.onEvent(EasterActivity.this, "点击注册");
 					mTextView.setVisibility(View.GONE);
 					regForm.setVisibility(View.VISIBLE);
 					phoneView.requestFocus();
@@ -263,8 +271,11 @@ public class EasterActivity extends BaseActivity{
 					
 					return false;
 				}
-				
-				if(!checkInput()) return false;
+				MobclickAgent.onEvent(EasterActivity.this, "提交注册");
+				if(!checkInput()) {
+					MobclickAgent.onEvent(EasterActivity.this, "注册验证失败");
+					return false;
+				}
 				else{
 					map = new HashMap<String, String>();
 					map.put("mobileNo", phone);
