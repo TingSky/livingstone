@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.joker.livingstone.service.DownloadService;
 import com.joker.livingstone.util.Const;
@@ -24,6 +25,7 @@ import com.joker.livingstone.util.DeviceUtil;
 
 
 public class WelcomeActivity extends BaseActivity {
+	public static final String TAG = "WelcomeActivity";
 	private static final int GOTO_MAIN_ACTIVITY = 0;  
 	private ImageView mImageView;
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -105,6 +107,8 @@ public class WelcomeActivity extends BaseActivity {
 					findViewById(R.id.bg).setBackgroundColor(Long.valueOf(bgcolor , 16).intValue());
 				}catch(Exception e){
 					mImageView.setImageDrawable(getResources().getDrawable(R.drawable.welcome));
+					Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+					e.printStackTrace();
 				}
 			}else if(mode.equals("2")){
 				

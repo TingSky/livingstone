@@ -12,7 +12,7 @@ import com.joker.livingstone.service.SendCommentService;
 
 
 public class AddCommentActivity extends BaseActivity{
-	
+	public static final String TAG = "AddCommentActivity";
     
     
     private EditText mEditText;
@@ -31,8 +31,6 @@ public class AddCommentActivity extends BaseActivity{
 		getDataFromIntent();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
-        
-
 	}
 	
 	private void getDataFromIntent(){

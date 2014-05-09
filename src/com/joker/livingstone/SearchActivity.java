@@ -50,8 +50,8 @@ import com.umeng.analytics.MobclickAgent;
 
 
 public class SearchActivity extends BaseActivity{
-	
-    
+	public static final String TAG = "SearchActivity";
+
     
     private ListView mListView;
     private MenuItem searchMenuItem;

@@ -25,6 +25,7 @@ import com.joker.livingstone.util.DialogHelper;
 
 
 public class ChapterActivity extends BaseActivity{
+	public static final String TAG = "ChapterActivity";
 	
     private ActionBar bar;
     

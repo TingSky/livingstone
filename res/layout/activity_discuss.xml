@@ -1,0 +1,37 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal" 
+        android:background="@drawable/border_section"
+        >
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="3.0dip"
+            android:visibility="gone"
+            android:listSelector="@drawable/item_selected_bg" >
+        </ListView>
+        <TextView 
+            android:id="@+id/hint"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:text="@string/comment_not_found"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+
+</android.support.v4.widget.DrawerLayout>

@@ -21,6 +21,8 @@
     <string name="action_discuss">讨论</string>
     <string name="action_add_comment">发表评论</string>
     <string name="action_send">发布</string>
+    <string name="action_share">分享</string>
+    <string name="action_copy">复制</string>
     
     <string name="easter_hangout">不注册</string>
     <string name="easter_reg">注册</string>

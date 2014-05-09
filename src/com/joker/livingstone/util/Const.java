@@ -5,8 +5,8 @@ import java.io.File;
 import android.os.Environment;
 
 public class Const {
-	public static String PATH = "http://218.244.146.3/huoshi/";
-	public static String CONFIG_PATH = "http://218.244.146.3/file/launcher.js";
+	public static String PATH = "http://218.244.146.3/huoshi_dev/";
+	public static String CONFIG_PATH = "http://218.244.146.3/dev/file/launcher.js";
 	
 	public static String IMEI ;
 	public static String USERID;

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_section"
+    android:background="@drawable/item_selected_bg"
     android:orientation="horizontal"
     android:paddingLeft="10.0dip"
     android:paddingTop="5.0dip"
@@ -62,32 +62,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_below="@id/comment"
+        android:lineSpacingExtra="5dp"
         android:gravity="left"
         android:text="2014-03-27 12:40:57"
         android:textColor="#88444444"
         android:textSize="12.0sp" />
     
-<!--     <TextView -->
-<!--         android:id="@+id/ip" -->
-<!--         android:layout_width="wrap_content" -->
-<!--         android:layout_height="wrap_content" -->
-<!--         android:layout_gravity="center_vertical" -->
-<!--         android:layout_toRightOf="@id/from" -->
-<!--         android:lineSpacingExtra="5dp" -->
-<!--         android:gravity="left" -->
-<!--         android:text="@string/test" -->
-<!--         android:textColor="#ff444444" -->
-<!--         android:textSize="16.0sp" /> -->
- 		<ToggleButton
-	        android:id="@+id/agree"
-	        android:layout_width="wrap_content"
-	        android:layout_height="30dp"
-	        android:layout_gravity="center_vertical"
-	        android:layout_below="@id/comment"
-	        android:layout_alignBaseline="@id/date"
-	        android:layout_alignParentRight="true"
-	        android:text="32赞"
-	        android:textColor="#88444444"
-        	android:textSize="12.0sp" />
+    <TextView
+        android:id="@+id/agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/date"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:lineSpacingExtra="5dp"
+        android:text="【32】"
+        android:textColor="#88444444"
+        android:textSize="12.0sp" />
+
+	<ImageView
+	    android:id="@+id/icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@id/date"
+	    android:layout_toLeftOf="@id/agree"
+	    android:src="@drawable/meizu_home_icon_like"
+	    android:paddingBottom="5dp"
+	    android:textColor="#88444444" />
 
 </RelativeLayout>

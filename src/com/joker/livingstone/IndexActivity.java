@@ -32,6 +32,8 @@ import com.umeng.update.UmengUpdateAgent;
 
 
 public class IndexActivity extends BaseActivity{
+	public static final String TAG = "IndexActivity";
+
 	
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;

@@ -17,7 +17,9 @@ public class DialogHelper {
 	}
 
 	public static void dismiss() {
-		progressDialog.dismiss();
+		if(progressDialog != null){
+			progressDialog.dismiss();
+		}
 	}
 
 	public static void showFinishDialog(final Context context ,String Message ){

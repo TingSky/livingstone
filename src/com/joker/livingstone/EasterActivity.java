@@ -32,7 +32,8 @@ import com.umeng.analytics.MobclickAgent;
 
 
 public class EasterActivity extends BaseActivity{
-	
+	public static final String TAG = "EasterActivity";
+
     
     private int userid;
     

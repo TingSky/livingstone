@@ -9,16 +9,20 @@ import android.view.MenuItem;
 import com.umeng.analytics.MobclickAgent;
 
 public abstract class BaseActivity extends ActionBarActivity {
+	
+	public static final String TAG = ""; 
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		MobclickAgent.onPageStart(TAG);
 		MobclickAgent.onResume(this);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
+		MobclickAgent.onPageStart(TAG);
 		MobclickAgent.onPause(this);
 	}
 	

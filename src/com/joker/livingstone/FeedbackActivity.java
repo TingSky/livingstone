@@ -31,7 +31,8 @@ import com.umeng.fb.model.DevReply;
 import com.umeng.fb.model.Reply;
 
 public class FeedbackActivity extends BaseActivity {
-	private static final String TAG = FeedbackActivity.class.getName();
+	public static final String TAG = "FeedbackActivity";
+
 	private FeedbackAgent agent;
 	private Conversation defaultConversation;
 	private ReplyListAdapter adapter;

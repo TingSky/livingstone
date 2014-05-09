@@ -6,6 +6,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -39,7 +40,7 @@ public class SendCommentService extends Service {
 		getDataFromIntent(intent);
 		startNotification();
 		
-		
+		final Intent i = intent;
 		
 		new Thread(new Runnable() {
 			@Override
@@ -51,12 +52,16 @@ public class SendCommentService extends Service {
 					json = new JSONObject(data);
 					if (json.getInt("rtn") == 0) {
 						endNotification();
+						i.setClass(SendCommentService.this, DiscussActivity.class);
+						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(i);
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
+		
 		SendCommentService.this.stopSelf();
 		return super.onStartCommand(intent, flags, startId);
 	}
