@@ -34,6 +34,11 @@
     <string name="comment_not_found">圣经的感动\n阅读的困惑\n经历的奇妙\n恩典的应许\n\n快来写写，记下你此时最真实的心情！</string>
     <string name="feedback_hint">我吐槽：</string>
     
+    <string name="no_app_to_share">您没有安装可以分享的应用%s!</string>
+    <string name="no_share_type">您没有分配分享类型</string>
+    <string name="error_occurred">抱歉，出错了...</string>
+    
+    
     <string name="reg_tag">感谢神！你是第%s个发现活石秘密的人。完成注册，成为活石，被神拣选，建造圣洁灵宫！</string>
     <string name="test">Test!测试Test!测试Test!测试Test!测试Test!测试Test!测试</string>
 

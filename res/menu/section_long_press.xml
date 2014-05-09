@@ -13,7 +13,8 @@
     <item android:id="@+id/action_share"  
           android:title="@string/action_share"
           android:orderInCategory="1"  
-          livingstone:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+          android:icon="@drawable/ic_action_share"
+          livingstone:actionProviderClass="com.joker.livingstone.provider.DynamicShareActionProvider"
           livingstone:showAsAction="always"/>  
           
     <item android:id="@+id/action_copy"  

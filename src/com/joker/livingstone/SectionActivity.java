@@ -1,7 +1,6 @@
 package com.joker.livingstone;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,16 +10,14 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.view.ActionProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.ActionBar;
-
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.ShareActionProvider;
+import android.text.ClipboardManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -37,7 +34,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.joker.livingstone.provider.DynamicShareActionProvider;
 import com.joker.livingstone.util.DBHelper;
 import com.joker.livingstone.util.DeviceUtil;
 import com.joker.livingstone.util.DialogHelper;
@@ -63,7 +62,9 @@ public class SectionActivity extends BaseActivity {
 	private TextView tmpHighLight;
 	private ActionMode actionMode;
 	private String[] shareContent = new String[100];
-	private ShareActionProvider mShareActionProvider;
+	private DynamicShareActionProvider mShareActionProvider;
+	private List<View> shareItems = new ArrayList<View>();
+	private String content;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -145,15 +146,16 @@ public class SectionActivity extends BaseActivity {
 		return target;
 	}
 	
-
-	
-
-
 	class MyPagerChangeListener implements OnPageChangeListener {
 
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
-			if(hint.getVisibility() == View.VISIBLE) hideHint();
+			if(hint.getVisibility() == View.VISIBLE) {
+				hideHint();
+			}
+			if(actionMode != null){
+				actionMode.finish();
+			}
 		}
 
 		@Override
@@ -384,21 +386,27 @@ public class SectionActivity extends BaseActivity {
 				no.setTextColor(Color.parseColor("#ff000000"));
 			}
 			content.setTextColor(Color.parseColor("#ff000000"));
+			shareItems.add(v);
 			shareContent[position] =  content.getText().toString();
 		}else{
-			TextView content = (TextView)v.findViewById(R.id.sectionText);
-			TextView no;
-			if(content == null){
-				content = (TextView)v.findViewById(R.id.title);
-			}else{
-				no = (TextView)v.findViewById(R.id.sectionNo);
-				no.setTextColor(Color.parseColor("#88444444"));
-			}
-			content.setTextColor(Color.parseColor("#ff444444"));
+			discheckShareContent(v);
+			shareItems.remove(v);
 			shareContent[position] = "";
 		}
-		
-		
+	}
+	/*
+	 * 进入分享选择模式后，反选经文颜色变化
+	 */
+	private void discheckShareContent(View v){
+		TextView content = (TextView)v.findViewById(R.id.sectionText);
+		TextView no;
+		if(content == null){
+			content = (TextView)v.findViewById(R.id.title);
+		}else{
+			no = (TextView)v.findViewById(R.id.sectionNo);
+			no.setTextColor(Color.parseColor("#88444444"));
+		}
+		content.setTextColor(Color.parseColor("#ff444444"));
 	}
 	
 
@@ -448,7 +456,7 @@ public class SectionActivity extends BaseActivity {
 			}
 			actionMode = startSupportActionMode(mActionModeCallback);  //开启ActionMode菜单
 			setShareContent(view , position);
-			view.setSelected(true);
+//			view.setSelected(true);
 			return true;
 		}
 	}
@@ -495,8 +503,6 @@ public class SectionActivity extends BaseActivity {
 	        // Inflate a menu resource providing context menu items
 	        MenuInflater inflater = mode.getMenuInflater();
 	        inflater.inflate(R.menu.section_long_press, menu);
-	        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
-	        shareSelectedItem();
 	        return true;
 	    }
 
@@ -505,20 +511,32 @@ public class SectionActivity extends BaseActivity {
 	    @Override
 	    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 	    	hideHint();
+	    	shareItems.clear();
 	        return true; // Return false if nothing is done
 	    }
 
 	    // Called when the user selects a contextual menu item
 	    @Override
 	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-	    	Log.d("123",item.getItemId() + "");
 	    	if(item.getItemId() == R.id.action_share){
-            	Log.d("1231","1231");
-                shareSelectedItem();
-                mode.finish(); // Action picked, so close the CAB
+	    		mShareActionProvider = (DynamicShareActionProvider) MenuItemCompat.getActionProvider(item);
+	    		mShareActionProvider.setShareDataType("text/plain");
+		        mShareActionProvider.setOnShareIntentUpdateListener(new DynamicShareActionProvider.OnShareIntentUpdateListener() {
+					
+					@Override
+					public Bundle onShareIntentExtrasUpdate() {
+						Bundle bundle = new Bundle();
+						getShareContent();
+						bundle.putString(Intent.EXTRA_TEXT, content);    
+					    return bundle;
+					}
+				});
+//                mode.finish(); // Action picked, so close the CAB
                 return true;
 	        }else{
-	        	Log.d("1231","12111111111111131");
+	        	ClipboardManager c = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+				c.setText(getShareContent());
+				Toast.makeText(SectionActivity.this, "选中经文内容已复制到剪贴板～", Toast.LENGTH_LONG).show();
 	        	return false;
 	        }
 	    }
@@ -527,53 +545,22 @@ public class SectionActivity extends BaseActivity {
 	    @Override
 	    public void onDestroyActionMode(ActionMode mode) {
 	    	shareContent = new String[100];
+	    	for (View v : shareItems) {
+				discheckShareContent(v);
+			}
 	        actionMode = null;
 	    }
 	};
 	
-	private void shareSelectedItem() {
-		Intent intent = new Intent(Intent.ACTION_SEND);  
-		intent.setType("text/plain");  
-		String content = "";
+	public String getShareContent() {
+		content = "";
 		for (String s : shareContent) {
 			if(s == null) continue;
 			content += s + "\n";
 		}
-		intent.putExtra(Intent.EXTRA_SUBJECT, "分享");     
-		intent.putExtra(Intent.EXTRA_TEXT, content);    
-		intent.putExtra(Intent.EXTRA_TITLE, "活石分享");  
-		
-		mShareActionProvider.setShareIntent(intent);  
+		content += "——分享自“活石”";
+		return content;
 	}
 	
-//	class ShareProvider extends ActionProvider {
-//		private final Context mContext;  
-//
-//		public ShareProvider(Context context) {
-//			super(context);
-//			this.mContext = context;
-//		}
-//
-//		@Override
-//		public View onCreateActionView() {
-//			LayoutInflater layoutInflater = LayoutInflater.from(mContext);  
-//            View view = layoutInflater.inflate(R.layout.custom_provider_layout, null);  
-//            ImageButton button = (ImageButton) view.findViewById(R.id.custom_share_btn);  
-//            // Attach a click listener for launching the system settings.  
-//            button.setOnClickListener(new View.OnClickListener() {  
-//                @Override  
-//                public void onClick(View v) {  
-//                  Intent intent=new Intent(Intent.ACTION_SEND);     
-//                  intent.setType("text/plain");     
-//                  intent.putExtra(Intent.EXTRA_SUBJECT, "分享");     
-//                  intent.putExtra(Intent.EXTRA_TEXT, "终于可以了!!!");      
-//                  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);     
-//                  mContext.startActivity(Intent.createChooser(intent, ""));  
-//                }  
-//            });  
-//            return view;  
-//		}
-//		
-//	}
 
 }
