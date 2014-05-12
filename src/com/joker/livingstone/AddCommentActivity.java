@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -73,6 +74,12 @@ public class AddCommentActivity extends BaseActivity{
 		finish();
 	}
 
-	 
+	@Override
+	public void onBackPressed() {
+		Intent i = getIntent();
+		i.setClass(this, DiscussActivity.class);
+		startActivity(i);
+		super.onBackPressed();
+	}
 
 }

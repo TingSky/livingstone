@@ -376,7 +376,7 @@ public class SectionActivity extends BaseActivity {
 	
 	
 	private void setShareContent(View v , int position){
-		if(shareContent[position] == null || shareContent[position].equals("")){
+		if(shareContent[position] == null){
 			TextView content = (TextView)v.findViewById(R.id.sectionText);
 			TextView no;
 			if(content == null){
@@ -391,7 +391,7 @@ public class SectionActivity extends BaseActivity {
 		}else{
 			discheckShareContent(v);
 			shareItems.remove(v);
-			shareContent[position] = "";
+			shareContent[position] = null;
 		}
 	}
 	/*
