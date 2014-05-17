@@ -6,7 +6,9 @@ import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.widget.Toast;
 
 
 public class DialogHelper {
@@ -41,4 +43,25 @@ public class DialogHelper {
 		  builder.create().show();
 	}
 
+	public static void showLogoutDialog(final Context context){
+		  AlertDialog.Builder builder = new Builder(context);
+		  builder.setMessage("您确定要注销吗？");
+		  builder.setTitle("活石");
+		  
+		  builder.setNegativeButton("注销", new OnClickListener() {
+			  @Override
+			  public void onClick(DialogInterface dialog, int which) {
+				  dialog.dismiss();
+				  DeviceUtil.set(context, "USERID", "");
+				  Toast.makeText(context, "注销成功", Toast.LENGTH_LONG).show();
+			  }
+		  });
+		  builder.setPositiveButton("取消", new OnClickListener() {
+			  @Override
+			  public void onClick(DialogInterface dialog, int which) {
+				  dialog.dismiss();
+			  }
+		  });
+		  builder.create().show();
+	}
 }

@@ -41,4 +41,11 @@
     <color name="action_bar_title">#fffafafa</color>
     <color name="item_press">#DDDDDDDD</color>
     <color name="hint">#FF0A0A0A</color>
+    
+    
+	<!--登录 -->
+    <color name="unberlineview_dividingline">#ffd9d3c5</color>
+    <color name="unberlineview_text">#ff888271</color>
+    <color name="gray">#ff7f7f7f</color>
+    <color name="bottombar_text_normal_color">#ffa5a5a5</color>
 </resources>

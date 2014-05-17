@@ -1,11 +1,17 @@
 package com.joker.livingstone;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.MenuItemCompat;
@@ -13,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,12 +26,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joker.livingstone.util.Const;
 import com.joker.livingstone.util.DBHelper;
+import com.joker.livingstone.util.DeviceUtil;
+import com.joker.livingstone.util.DialogHelper;
+import com.joker.livingstone.util.HttpHelper;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -38,8 +50,8 @@ public class IndexActivity extends BaseActivity{
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
 	
-	private String[] menuList;
     private ListView drawerList;
+    private DrawerAdapter adapter;
     private CharSequence title;
     
     private ActionBar bar;
@@ -48,10 +60,12 @@ public class IndexActivity extends BaseActivity{
     
     private MenuItem searchMenuItem;
     private SearchView search;
+    private String userid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//DeviceUtil.set(this, "USERID", 10001+"");
 		setContentView(R.layout.activity_index);
 		mGridView = (GridView) findViewById(R.id.gridView);
 		UmengUpdateAgent.setUpdateCheckConfig(false);
@@ -67,23 +81,31 @@ public class IndexActivity extends BaseActivity{
 	 * 初始化Drawer和ActionBar
 	 */
 	private void initDrawerAndActionBar() {
-		menuList = getResources().getStringArray(R.array.menu);
 		title = getTitle();
 		
 		drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuList));
+		adapter = new DrawerAdapter(); 
+		drawerList.setAdapter(adapter);
 		drawerList.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 				drawerLayout.closeDrawers();
-			    if(position == 1){
+				if(position == 0){
+					if(DeviceUtil.get(IndexActivity.this, "USERID").equals("")){
+						Intent i = new Intent(IndexActivity.this, LoginActivity.class);
+						IndexActivity.this.startActivity(i);
+					}else{
+						DialogHelper.showLogoutDialog(IndexActivity.this);
+					}
+				}else if(position == 1){
+					Toast.makeText(IndexActivity.this, "『志愿者计划』页面暂未开放，敬请期待...", Toast.LENGTH_LONG).show();
+				}else if(position == 2){
 			    	startActivity(new Intent(IndexActivity.this , FeedbackActivity.class));
-			    }else if(position == 2){
-			    	Toast.makeText(IndexActivity.this, "『关于』页面暂未开放，敬请期待...", Toast.LENGTH_LONG).show();
-			    }
+			    }else if(position == 3){
+			    	Intent i = new Intent(IndexActivity.this , AboutActivity.class);
+			    	IndexActivity.this.startActivity(i);
+				}
 			}
 		});
 		
@@ -102,6 +124,11 @@ public class IndexActivity extends BaseActivity{
 
             public void onDrawerOpened(View drawerView) {
             	bar.setTitle(R.string.drawer_open);
+            	adapter.notifyDataSetChanged();
+            	userid = DeviceUtil.get(IndexActivity.this, "USERID");
+            	if(!userid.equals("")){
+            		new SyncUserTask().execute(null,null,null);
+            	}
                 supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -109,7 +136,90 @@ public class IndexActivity extends BaseActivity{
 
         bar.setDisplayHomeAsUpEnabled(true);
         bar.setHomeButtonEnabled(true);
+	}
+	
+	class SyncUserTask extends AsyncTask<Void, Void, Void>{
+		HashMap<String , String> map = new HashMap<String, String>();
+		String url = Const.PATH + "mobileSyncUser";
+		
+		@Override
+		protected Void doInBackground(Void...v) {
+			String data = HttpHelper.getString(IndexActivity.this , url , map);
+			JSONObject json;
+			try {
+				json = new JSONObject(data);
+				if (json.getInt("rtn") == 0) {
+//					DeviceUtil.set(IndexActivity.this, "USERID" , json.getJSONObject("data").getJSONObject("user").getString("userId"));
+					DeviceUtil.set(IndexActivity.this, "NICKNAME" , json.getJSONObject("data").getJSONObject("user").getString("userName"));
+					DeviceUtil.set(IndexActivity.this, "PHONE" , json.getJSONObject("data").getJSONObject("user").getString("mobileNo"));
+					DeviceUtil.set(IndexActivity.this, "VOTE" , json.getJSONObject("data").getInt("vote") + "");
+					return null ;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 
+		@Override
+		protected void onPostExecute(Void result) {
+			adapter.notifyDataSetChanged();
+			super.onPostExecute(result);
+		}
+
+	}
+	
+	
+	class DrawerAdapter extends BaseAdapter{
+
+		List<View> data = new ArrayList<View>();
+		LayoutInflater mInflater = (LayoutInflater) IndexActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		String[] item = IndexActivity.this.getResources().getStringArray(R.array.menu);
+		
+		@Override
+		public int getCount() {
+			return 4;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return data.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if(position == 0){
+				RelativeLayout layout = (RelativeLayout) mInflater.inflate(R.layout.drawer_user, parent , false);
+				userid = DeviceUtil.get(IndexActivity.this, "USERID");
+				if(userid.equals("")) return layout;
+				
+				View userLogin = layout.findViewById(R.id.user_login);
+				userLogin.setVisibility(View.GONE);
+				View userInfo = layout.findViewById(R.id.user_info);
+				userInfo.setVisibility(View.VISIBLE);
+				
+				
+				TextView text = (TextView) layout.findViewById(R.id.user_nickname);
+				text.setText(DeviceUtil.get(IndexActivity.this, "NICKNAME"));
+				TextView vote = (TextView) layout.findViewById(R.id.user_thanks);
+				vote.setText(DeviceUtil.get(IndexActivity.this, "VOTE") + "赞");
+				
+//				ImageView image = (ImageView) layout.findViewById(R.id.user_photo);
+//				image.
+				return layout;
+			}else{
+				TextView view = (TextView)mInflater.inflate(R.layout.drawer_list_item, parent , false);
+				view.setText(item[position-1]);
+				return view;
+			}
+		}
+
+		
 	}
 	
 	

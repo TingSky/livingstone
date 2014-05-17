@@ -42,6 +42,7 @@ public class HttpHelper {
 	}
 	
 	public static String getString(Context context ,String urlString , Map<String, String> params){
+		if(!DeviceUtil.isNetworkConnected(context)) return "";
 		String resultData = "";
 		String content = "";
 		try{

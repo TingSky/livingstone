@@ -15,7 +15,10 @@ public class DeviceUtil {
 		createFile();
 		Const.IMEI = getImei(context);
 		Const.USERID = get(context , "USERID");
-		Const.EGGID = get(context, "EGGID");
+		Const.NICKNAME = get(context , "NICKNAME");
+		Const.PHONE = get(context , "PHONE");
+		Const.VOTE = get(context , "VOTE");
+//		Const.EGGID = get(context, "EGGID");
 	}
 	
 

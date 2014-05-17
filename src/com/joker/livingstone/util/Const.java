@@ -10,6 +10,10 @@ public class Const {
 	
 	public static String IMEI ;
 	public static String USERID;
+	public static String PHONE;
+	public static String NICKNAME;
+	public static String VOTE;
+	
 	public static String EGGID;
 	
 	public static String UPDATE_DATE;

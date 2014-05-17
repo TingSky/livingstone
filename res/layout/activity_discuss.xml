@@ -29,6 +29,7 @@
             android:textAlignment="center"
             android:gravity="center"
             android:text="@string/comment_not_found"
+            android:textColor="@color/dark_grey"
             android:visibility="gone"
             />
     </LinearLayout>

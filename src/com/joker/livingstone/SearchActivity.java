@@ -98,10 +98,7 @@ public class SearchActivity extends BaseActivity{
 		
 		
 		query = i.getStringExtra(SearchManager.QUERY);
-		if(query.equals("ªÓ Ø") && DeviceUtil.isNetworkConnected(this)){
-			startActivity(new Intent(this, EasterActivity.class));
-			
-		}
+		
 		
 		SearchRecentSuggestions srs = new SearchRecentSuggestions(this ,
 				SearchProvider.AUTHORITY , SearchProvider.MODE);

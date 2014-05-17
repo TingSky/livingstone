@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <!-- The main content view -->
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:scrollbars="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:paddingLeft="15.0dip"
+                android:paddingRight="15.0dip"
+                android:paddingTop="20.0dip" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10.0dip"
+                    android:addStatesFromChildren="true"
+                    android:background="@drawable/edittext_multilinev2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="8.0dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:src="@drawable/ic_reg_phone" />
+
+                    <View
+                        android:layout_width="1.0dip"
+                        android:layout_height="20.0dip"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:layout_marginRight="@dimen/underlineview_inner_padding"
+                        android:background="@color/unberlineview_dividingline" />
+
+                    <EditText
+                        android:id="@+id/phone"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="请输入您的手机号"
+                        android:inputType="phone"
+                        android:singleLine="true"
+                        android:textColor="@color/unberlineview_text"
+                        android:background="@android:color/transparent"
+                        android:textSize="16.0sp" />
+                    <requestFocus />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15.0dip"
+                    android:addStatesFromChildren="true"
+                    android:background="@drawable/edittext_multilinev2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="8.0dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:src="@drawable/ic_reg_password" />
+
+                    <View
+                        android:layout_width="1.0dip"
+                        android:layout_height="20.0dip"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:layout_marginRight="@dimen/underlineview_inner_padding"
+                        android:background="@color/unberlineview_dividingline" />
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="请输入登录密码"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textColor="@color/unberlineview_text"
+                        android:background="@android:color/transparent"
+                        android:textSize="16.0sp" />
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15.0dip"
+                    android:addStatesFromChildren="true"
+                    android:background="@drawable/edittext_multilinev2"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="8.0dip" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:src="@drawable/ic_reg_name" />
+
+                    <View
+                        android:layout_width="1.0dip"
+                        android:layout_height="20.0dip"
+                        android:layout_marginLeft="@dimen/underlineview_inner_padding"
+                        android:layout_marginRight="@dimen/underlineview_inner_padding"
+                        android:background="@color/unberlineview_dividingline" />
+
+                    <EditText
+                        android:id="@+id/nickname"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="请输入社区昵称"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:textColor="@color/unberlineview_text"
+                        android:background="@android:color/transparent"
+                        android:textSize="16.0sp" />
+                </LinearLayout>
+
+<!--                 <RelativeLayout -->
+<!--                     android:layout_width="fill_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_marginTop="15.0dip" > -->
+
+<!--                     <com.immomo.momo.android.view.HandyTextView -->
+<!--                         android:id="@id/login_tv_selectcountrycode" -->
+<!--                         style="@style/register_note" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:clickable="true" -->
+<!--                         android:text="选择手机区号" /> -->
+
+<!--                     <com.immomo.momo.android.view.HandyTextView -->
+<!--                         android:id="@id/login_tv_forgotpassword" -->
+<!--                         style="@style/register_note" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:layout_alignParentRight="true" -->
+<!--                         android:layout_alignParentTop="true" -->
+<!--                         android:clickable="true" -->
+<!--                         android:text="@string/forgetpassword" /> -->
+<!--                 </RelativeLayout> -->
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout style="@style/Style_BottomBar" >
+
+            <Button
+                android:id="@+id/btn_back"
+                style="@style/Style_Bottom_Btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="9.0dip"
+                android:layout_weight="1.0"
+                android:text="返回" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                style="@style/Style_Bottom_Btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="9.0dip"
+                android:layout_weight="1.0"
+                android:text="注册" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

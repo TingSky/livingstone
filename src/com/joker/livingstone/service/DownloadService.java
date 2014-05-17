@@ -75,9 +75,10 @@ public class DownloadService extends Service {
 			            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();  
 			            InputStream in = urlConn.getInputStream(); 
 			            FileOutputStream fos = new FileOutputStream(new File(Const.SDCARD_DATA_LOCATION + name));
-			            byte b[] = new byte[32] ;
-			            while((in.read(b)) != -1){
-			            	fos.write(b);
+			            byte b[] = new byte[256] ;
+			            int len = 0;
+			            while((len = in.read(b)) != -1){
+			            	fos.write(b, 0, len);
 			            }
 			            fos.flush();
 			            fos.close();
@@ -86,13 +87,13 @@ public class DownloadService extends Service {
 			            DownloadService.this.stopSelf();
 					}
 				} catch (JSONException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+//					e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 		}).start();

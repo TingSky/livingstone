@@ -473,15 +473,18 @@ public class SectionActivity extends BaseActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		String userid = DeviceUtil.get(this, "USERID");
-		if(userid == null || userid.equals("")){
-			return true;
-		}
+
 		getMenuInflater().inflate(R.menu.section, menu);
 		MenuItem discuss = menu.findItem(R.id.action_discuss);
 		discuss.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
+				if(DeviceUtil.get(SectionActivity.this , "USERID").equals("")){
+					Intent i = new Intent(SectionActivity.this, LoginActivity.class);
+					SectionActivity.this.startActivity(i);
+					return true;
+				}
+				
 				Intent i = new Intent(SectionActivity.this, DiscussActivity.class);
 				i.putExtra("bookId", bookId);
 				i.putExtra("chapterNo", chapterNo);
