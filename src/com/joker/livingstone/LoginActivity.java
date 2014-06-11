@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity{
 			if(v.getId() == R.id.btn_ok){
 				if(checkInput()){
 					map = new HashMap<String, String>();
-					map.put("userName", phone);
+					map.put("mobileNo", phone);
 					map.put("password", password);
 					new LoginTask().execute(Const.PATH + "mobileLogin");
 				}
@@ -147,7 +147,7 @@ public class LoginActivity extends BaseActivity{
 			}else if(result.equals("2")){
 				DialogHelper.showFinishDialog(LoginActivity.this, "您输入的手机号码有误！" , false);	
 			}else if(result.equals("17")){
-				DialogHelper.showFinishDialog(LoginActivity.this, "您输入的密码不正确！");	
+				DialogHelper.showFinishDialog(LoginActivity.this, "您输入的密码不正确！" , false);	
 			}
 			super.onPostExecute(result);
 		}

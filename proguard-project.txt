@@ -14,6 +14,7 @@
 
 -keep class android.support.v7.appcompat.** { public protected *; }
 -keep class android.support.v4.** { public protected *; }
+-keep class com.joker.livingstone.provider.**{ public protected *; }
 
 -keepclassmembers class * extends android.app.Activity { public void *(android.view.View); }
 -keepclassmembers class android.support.v4.app.Fragment { *** getActivity(); public *** onCreate(); public *** onCreateOptionsMenu(...); }

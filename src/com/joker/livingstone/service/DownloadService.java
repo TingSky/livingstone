@@ -91,7 +91,7 @@ public class DownloadService extends Service {
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 //					e.printStackTrace();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 //					e.printStackTrace();
 				}

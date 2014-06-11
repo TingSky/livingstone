@@ -117,6 +117,11 @@ public class RegActivity extends BaseActivity{
 			Toast.makeText(this, "密码长度太短，请重新输入", Toast.LENGTH_LONG).show();
 			return false;
 		}
+		String format = "[a-zA-Z0-9](@?+\\w){5,19}+";
+		if(!password.matches(format)){
+			Toast.makeText(this, "您的密码格式不对，改个简单的吧", Toast.LENGTH_LONG).show();
+			return false;
+		}
 		
 		if(password.length()>20){
 			Toast.makeText(this, "您的密码也太长了吧，改个简单的吧", Toast.LENGTH_LONG).show();

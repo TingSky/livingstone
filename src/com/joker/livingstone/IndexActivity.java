@@ -68,8 +68,12 @@ public class IndexActivity extends BaseActivity{
 //DeviceUtil.set(this, "USERID", 10001+"");
 		setContentView(R.layout.activity_index);
 		mGridView = (GridView) findViewById(R.id.gridView);
-		UmengUpdateAgent.setUpdateCheckConfig(false);
-		UmengUpdateAgent.silentUpdate(this);
+		if(Const.FIRST){
+			UmengUpdateAgent.setUpdateCheckConfig(false);
+			UmengUpdateAgent.silentUpdate(this);
+			UmengUpdateAgent.setUpdateCheckConfig(false);
+			Const.FIRST = false;
+		}
 		
 		initDrawerAndActionBar();
 		loadBibleData();
@@ -98,11 +102,11 @@ public class IndexActivity extends BaseActivity{
 					}else{
 						DialogHelper.showLogoutDialog(IndexActivity.this);
 					}
+//				}else if(position == 1){
+//					Toast.makeText(IndexActivity.this, "『志愿者计划』页面暂未开放，敬请期待...", Toast.LENGTH_LONG).show();
 				}else if(position == 1){
-					Toast.makeText(IndexActivity.this, "『志愿者计划』页面暂未开放，敬请期待...", Toast.LENGTH_LONG).show();
-				}else if(position == 2){
 			    	startActivity(new Intent(IndexActivity.this , FeedbackActivity.class));
-			    }else if(position == 3){
+			    }else if(position == 2){
 			    	Intent i = new Intent(IndexActivity.this , AboutActivity.class);
 			    	IndexActivity.this.startActivity(i);
 				}
@@ -178,7 +182,7 @@ public class IndexActivity extends BaseActivity{
 		
 		@Override
 		public int getCount() {
-			return 4;
+			return 3;
 		}
 
 		@Override
@@ -279,16 +283,25 @@ public class IndexActivity extends BaseActivity{
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-//			TextView t = (TextView)view.findViewById(R.id.bookName);
-//			Toast.makeText(IndexActivity.this, position + "", Toast.LENGTH_LONG).show();
-			
+			TextView count = (TextView)view.findViewById(R.id.chapter);
 			Cursor c = (Cursor)parent.getItemAtPosition(position);
-			Intent i = new Intent(IndexActivity.this , ChapterActivity.class);
-			i.putExtra("bookId", c.getInt(0));
-//			i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
-			i.putExtra("bookName", c.getString(1));
-//			i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
-			IndexActivity.this.startActivity(i);
+			if(count.getText().toString().equals("1")){
+				Intent i = new Intent(IndexActivity.this , SectionActivity.class);
+				i.putExtra("bookId", c.getInt(0));
+//				i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
+				i.putExtra("bookName", c.getString(1));
+//				i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
+				IndexActivity.this.startActivity(i);
+			}else{
+				Intent i = new Intent(IndexActivity.this , ChapterActivity.class);
+				i.putExtra("bookId", c.getInt(0));
+//				i.putExtra("bookId", c.getString(c.getColumnIndex("_id")));
+				i.putExtra("bookName", c.getString(1));
+//				i.putExtra("bookId", c.getString(c.getColumnIndex("bookName")));
+				IndexActivity.this.startActivity(i);
+				
+			}
+			
 		}
 
 	}

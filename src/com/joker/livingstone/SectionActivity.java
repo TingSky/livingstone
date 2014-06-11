@@ -378,16 +378,17 @@ public class SectionActivity extends BaseActivity {
 	private void setShareContent(View v , int position){
 		if(shareContent[position] == null){
 			TextView content = (TextView)v.findViewById(R.id.sectionText);
-			TextView no;
+			String index = "";
 			if(content == null){
 				content = (TextView)v.findViewById(R.id.title);
 			}else{
-				no = (TextView)v.findViewById(R.id.sectionNo);
+				TextView no = (TextView)v.findViewById(R.id.sectionNo);
 				no.setTextColor(Color.parseColor("#ff000000"));
+				index = no.getText().toString() +" ";
 			}
 			content.setTextColor(Color.parseColor("#ff000000"));
 			shareItems.add(v);
-			shareContent[position] =  content.getText().toString();
+			shareContent[position] =  index + content.getText().toString();
 		}else{
 			discheckShareContent(v);
 			shareItems.remove(v);
@@ -520,7 +521,7 @@ public class SectionActivity extends BaseActivity {
 
 	    // Called when the user selects a contextual menu item
 	    @Override
-	    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+	    public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
 	    	if(item.getItemId() == R.id.action_share){
 	    		mShareActionProvider = (DynamicShareActionProvider) MenuItemCompat.getActionProvider(item);
 	    		mShareActionProvider.setShareDataType("text/plain");
@@ -530,7 +531,8 @@ public class SectionActivity extends BaseActivity {
 					public Bundle onShareIntentExtrasUpdate() {
 						Bundle bundle = new Bundle();
 						getShareContent();
-						bundle.putString(Intent.EXTRA_TEXT, content);    
+						bundle.putString(Intent.EXTRA_TEXT, content);  
+						mode.finish();
 					    return bundle;
 					}
 				});
@@ -540,6 +542,7 @@ public class SectionActivity extends BaseActivity {
 	        	ClipboardManager c = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 				c.setText(getShareContent());
 				Toast.makeText(SectionActivity.this, "选中经文内容已复制到剪贴板～", Toast.LENGTH_LONG).show();
+				mode.finish();
 	        	return false;
 	        }
 	    }
@@ -561,7 +564,7 @@ public class SectionActivity extends BaseActivity {
 			if(s == null) continue;
 			content += s + "\n";
 		}
-		content += "——分享自“活石”";
+		content += "【"+ initTitle() +"】 分享自#活石#";
 		return content;
 	}
 	

@@ -8,7 +8,6 @@
     
     
      <string-array name="menu">
-        <item>志愿者计划</item>
         <item>反馈</item>
         <item>关于</item>
     </string-array>
